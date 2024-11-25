@@ -51,7 +51,7 @@ class LLAMBO:
         else:
             warping_transformer = None
 
-        rate_limiter = RateLimiter(max_tokens=100000, time_frame=60, max_requests=720)
+        rate_limiter = RateLimiter(max_tokens=100000, time_frame=60, max_requests=450)
         
         print('='*150)
         print(f'[Search settings]: ' + '\n\t'
@@ -126,7 +126,7 @@ class LLAMBO:
 
         eval_config, eval_results = self.bbox_eval_f(config)
 
-        assert isinstance(eval_config, dict), 'bbox_eval_f() should return the evaluated config as a dictinoary'
+        assert isinstance(eval_config, dict), 'bbox_eval_f() should return the evaluated config as a dictionary'
         assert isinstance(eval_results, dict), 'bbox_eval_f() should return bbox evaluation results as a dictionary'
         assert 'score' in eval_results.keys(), 'score must be a key in results returned'
 

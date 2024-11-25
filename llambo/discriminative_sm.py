@@ -5,16 +5,16 @@ import asyncio
 import re
 import numpy as np
 from scipy.stats import norm
-from aiohttp import ClientSession
 from llambo.rate_limiter import RateLimiter
 from llambo.discriminative_sm_utils import gen_prompt_tempates
+from openai import AsyncOpenAI
+from openai import Timeout, RateLimitError, APIError
 
 
-openai.api_type = os.environ["OPENAI_API_TYPE"]
-openai.api_version = os.environ["OPENAI_API_VERSION"]
-openai.api_base = os.environ["OPENAI_API_BASE"]
-openai.api_key = os.environ["OPENAI_API_KEY"]
+openai.api_base = os.environ.get("OPENAI_API_BASE")
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
+client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 class LLM_DIS_SM:
     def __init__(self, task_context, n_gens, lower_is_better, 
@@ -49,51 +49,53 @@ class LLM_DIS_SM:
 
         assert type(self.shuffle_features) == bool, 'shuffle_features must be a boolean'
 
+        CONCURRENCY_LIMIT = 5
+
+        self.semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
 
     async def _async_generate(self, few_shot_template, query_example, query_idx):
         '''Generate a response from the LLM async.'''
         message = []
-        message.append({"role": "system","content": "You are an AI assistant that helps people find information."})
+        message.append({"role": "system","content": "You are an AI assistant that helps people find information.."})
         user_message = few_shot_template.format(Q=query_example['Q'])
         message.append({"role": "user", "content": user_message})
+        print("USER MESSAGE:", user_message)
 
         MAX_RETRIES = 3
+        resp = None
+        n_preds = int(self.n_gens/self.n_templates) if self.bootstrapping else int(self.n_gens)
+        for retry in range(MAX_RETRIES):
+            try:
+                # Update rate limiter before the request
+                start_time = time.time()
+                self.rate_limiter.add_request(request_text=user_message, current_time=start_time)
+                resp = await client.chat.completions.create(
+                    model=self.chat_engine,
+                    messages=message,
+                    temperature=0.7,
+                    max_tokens=8,
+                    top_p=0.95,
+                    n=max(n_preds, 3),
+                    timeout=10
+                )
+                self.rate_limiter.add_request(request_token_count=resp.usage.total_tokens, current_time=time.time())
+                break
 
-        async with ClientSession(trust_env=True) as session:
-            openai.aiosession.set(session)
-
-            resp = None
-            n_preds = int(self.n_gens/self.n_templates) if self.bootstrapping else int(self.n_gens)
-            for retry in range(MAX_RETRIES):
-                try:
-                    start_time = time.time()
-                    self.rate_limiter.add_request(request_text=user_message, current_time=start_time)
-                    resp = await openai.ChatCompletion.acreate(
-                        engine=self.chat_engine,
-                        messages=message,
-                        temperature=0.7,
-                        max_tokens=8,
-                        top_p=0.95,
-                        n=max(n_preds, 3),            # e.g. for 5 templates, get 2 generations per template
-                        request_timeout=10
-                    )
-                    self.rate_limiter.add_request(request_token_count=resp['usage']['total_tokens'], current_time=time.time())
-                    break
-                except Exception as e:
-                    print(f'[SM] RETRYING LLM REQUEST {retry+1}/{MAX_RETRIES}...')
-                    print(resp)
-                    if retry == MAX_RETRIES-1:
-                        await openai.aiosession.get().close()
-                        raise e
-                    pass
-
-        await openai.aiosession.get().close()
+            except Exception as e:
+                sleep_time = 120
+                print(f'[SM] An error occurred: {e}. Retrying {retry + 1}/{MAX_RETRIES}..')
+                print(f'Retrying in {sleep_time} seconds...')
+                print(f'Response: {resp}')
+                await asyncio.sleep(sleep_time)
+                if retry == MAX_RETRIES-1:
+                    raise e
+                pass
 
         if resp is None:
             return None
 
-        tot_tokens = resp['usage']['total_tokens']
-        tot_cost = 0.0015*(resp['usage']['prompt_tokens']/1000) + 0.002*(resp['usage']['completion_tokens']/1000)
+        tot_tokens = resp.usage.total_tokens
+        tot_cost = 0.0015 * (resp.usage.prompt_tokens / 1000) + 0.002 * (resp.usage.completion_tokens / 1000)
 
         return query_idx, resp, tot_cost, tot_tokens
 
@@ -140,7 +142,7 @@ class LLM_DIS_SM:
                     sample_preds = [np.nan] * self.n_gens
                 else:
                     sample_preds = []
-                    all_gens_text = [x['message']['content'] for template_response in sample_response for x in template_response[0]['choices'] ]        # fuarr this is some high level programming
+                    all_gens_text = [x.message.content for template_response in sample_response for x in template_response[0].choices]
                     for gen_text in all_gens_text:
                         gen_pred = re.findall(r"## (-?[\d.]+) ##", gen_text)
                         if len(gen_pred) == 1:
@@ -263,6 +265,5 @@ class LLM_DIS_SM:
         best_point = candidate_configs.iloc[[best_point_index], :]  # return selected point as dataframe not series
 
         return best_point, cost, time_taken
-
 
 
