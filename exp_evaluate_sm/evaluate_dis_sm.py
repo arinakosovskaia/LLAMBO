@@ -23,6 +23,59 @@ rate_limiter = RateLimiter(max_tokens=100000, time_frame=60)
 
 logger = logging.getLogger(__name__)
 
+def create_path():
+    # define result save directory
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    save_res_fpath = f'{script_dir}/results/evaluate_dis_sm/{dataset_name}/{model}/{num_observed}.json'
+    if not os.path.exists(os.path.dirname(save_res_fpath)):
+        os.makedirs(os.path.dirname(save_res_fpath))
+    # define logging directory
+    logging_fpath = f'{script_dir}/logs/evaluate_dis_sm/{dataset_name}/{model}/{num_observed}.log'
+    if not os.path.exists(os.path.dirname(logging_fpath)):
+        os.makedirs(os.path.dirname(logging_fpath))
+    setup_logging(logging_fpath)
+    return save_res_fpath, logging_fpath
+
+def run_cot(results, max_tokens):
+        results.setdefault(f'LLAMBO_CoT_{max_tokens}', {
+            'rmse': [], 
+            'r2': [], 
+            'nll': [], 
+            'mace': [], 
+            'sharpness': [], 
+            'observed_coverage': [],
+            'regret': [], 
+            'y_pred': [],
+            'y_std': [],
+            'y_true': [],
+            'llm_query_cost': [],
+            'llm_query_time': []
+
+        })
+
+        LLM_SM = LLM_DIS_SM(task_context, n_gens=10, lower_is_better=lower_is_better, 
+                                bootstrapping=False, n_templates=5, use_recalibration=False,
+                                verbose=False, rate_limiter=rate_limiter, chat_engine=engine, 
+                                prompting='cot', max_reasoning_tokens=max_tokens)
+        y_mean, y_std, cost, time_taken = asyncio.run(LLM_SM._evaluate_candidate_points(observed_configs, observed_fvals, candidate_configs))
+        scores = evaluate_posterior(y_mean, y_std, candidate_fvals.to_numpy(), f_best, lower_is_better)
+        rmse, r2, nll, mace, sharpness, observed_coverage, regret = scores
+        logger.info(f"[LLAMBO_CoT_{max_tokens}] RMSE: {rmse:.4f}, R2 score: {r2:.4f}, NLL: {nll:.4f}, "
+                    f"Coverage: {observed_coverage:.4f}, MACE: {mace:.4f}, Sharpness: {sharpness:.4f}, Regret: {regret:.4f} | Cost: ${cost:.4f}, Time: {time_taken:.4f}s")
+        results[f'LLAMBO_CoT_{max_tokens}']['rmse'].append(rmse)
+        results[f'LLAMBO_CoT_{max_tokens}']['r2'].append(r2)
+        results[f'LLAMBO_CoT_{max_tokens}']['nll'].append(nll)
+        results[f'LLAMBO_CoT_{max_tokens}']['mace'].append(mace)
+        results[f'LLAMBO_CoT_{max_tokens}']['sharpness'].append(sharpness)
+        results[f'LLAMBO_CoT_{max_tokens}']['observed_coverage'].append(observed_coverage)
+        results[f'LLAMBO_CoT_{max_tokens}']['regret'].append(regret)
+        results[f'LLAMBO_CoT_{max_tokens}']['y_pred'].append(y_mean.squeeze().tolist())
+        results[f'LLAMBO_CoT_{max_tokens}']['y_std'].append(y_std.squeeze().tolist())
+        results[f'LLAMBO_CoT_{max_tokens}']['y_true'].append(candidate_fvals.to_numpy().squeeze().tolist())
+        results[f'LLAMBO_CoT_{max_tokens}']['llm_query_cost'].append(cost)
+        results[f'LLAMBO_CoT_{max_tokens}']['llm_query_time'].append(time_taken)
+
+
 def setup_logging(log_name):
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     file_handler = logging.FileHandler(log_name, mode='w')
@@ -362,32 +415,12 @@ if __name__ == '__main__':
         results['LLAMBO']['llm_query_time'].append(time_taken)
 
         tot_llm_cost += cost
+        print("Running cot")
+        asyncio.run(asyncio.sleep(0))
+        asyncio.sleep(60)
 
-
-        # evaluate LLAMBO - vanilla
-        LLM_SM = LLM_DIS_SM(task_context, n_gens=10, lower_is_better=lower_is_better, 
-                                bootstrapping=False, n_templates=1, use_recalibration=False,
-                                verbose=False, rate_limiter=rate_limiter, chat_engine=engine)
-        y_mean, y_std, cost, time_taken = asyncio.run(LLM_SM._evaluate_candidate_points(observed_configs, observed_fvals, candidate_configs))
-        scores = evaluate_posterior(y_mean, y_std, candidate_fvals.to_numpy(), f_best, lower_is_better)
-        rmse, r2, nll, mace, sharpness, observed_coverage, regret = scores
-        logger.info(f"[LLAMBO_VANILLA] RMSE: {rmse:.4f}, R2 score: {r2:.4f}, NLL: {nll:.4f}, "
-                    f"Coverage: {observed_coverage:.4f}, MACE: {mace:.4f}, Sharpness: {sharpness:.4f}, Regret: {regret:.4f} | Cost: ${cost:.4f}, Time: {time_taken:.4f}s")
-        results['LLAMBO_VANILLA']['rmse'].append(rmse)
-        results['LLAMBO_VANILLA']['r2'].append(r2)
-        results['LLAMBO_VANILLA']['nll'].append(nll)
-        results['LLAMBO_VANILLA']['mace'].append(mace)
-        results['LLAMBO_VANILLA']['sharpness'].append(sharpness)
-        results['LLAMBO_VANILLA']['observed_coverage'].append(observed_coverage)
-        results['LLAMBO_VANILLA']['regret'].append(regret)
-        results['LLAMBO_VANILLA']['y_pred'].append(y_mean.squeeze().tolist())
-        results['LLAMBO_VANILLA']['y_std'].append(y_std.squeeze().tolist())
-        results['LLAMBO_VANILLA']['y_true'].append(candidate_fvals.to_numpy().squeeze().tolist())
-        results['LLAMBO_VANILLA']['llm_query_cost'].append(cost)
-        results['LLAMBO_VANILLA']['llm_query_time'].append(time_taken)
-        
-        tot_llm_cost += cost
-
+        for max_tokens in [300, 500, 7000, 1000]:
+            run_cot(results, max_tokens)       
 
         # save results
         with open(save_res_fpath, 'w') as f:

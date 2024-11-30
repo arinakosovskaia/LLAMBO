@@ -1,0 +1,72 @@
+2024-11-29 18:45:32 - INFO - ========================================================================================================================================================================================================
+2024-11-29 18:45:32 - INFO - Evaluating sampling with seed 0...
+2024-11-29 18:45:32 - INFO - [TPE_IN] Average regret: 0.6450, Best regret: 0.2000, Score spread: 0.1987, Mahalanobis distance: 6.6420, Gen var: 7.6785, Log likelihood: -16.3890
+2024-11-29 18:45:33 - INFO - [TPE_MULTI] Average regret: 0.5300, Best regret: 0.1000, Score spread: 0.2023, Mahalanobis distance: 5.0557, Gen var: 13.6988, Log likelihood: -16.7644
+2024-11-29 18:45:33 - INFO - [RANDOM] Average regret: 0.8375, Best regret: 0.1500, Score spread: 0.1662, Mahalanobis distance: 9.3242, Gen var: 127.1528, Log likelihood: -45.8157
+2024-11-29 18:45:36 - INFO - [LLAMBO] Average regret: 0.1542, Best regret: 0.1000, Score spread: 0.0310, Mahalanobis distance: 2.9804, Gen var: 0.0000, Log likelihood: -9.4214
+2024-11-29 18:45:36 - INFO - Running cot with 500
+2024-11-29 18:45:58 - INFO - [LLAMBO_CoT_500] Average regret: 0.1944, Best regret: 0.1500, Score spread: 0.0381, Mahalanobis distance: 3.0715, Gen var: 0.0000, Log likelihood: -9.0597
+2024-11-29 18:45:58 - INFO - Running cot with 1000
+2024-11-29 18:46:19 - INFO - [LLAMBO_CoT_1000] Average regret: 0.2105, Best regret: 0.1000, Score spread: 0.0490, Mahalanobis distance: 3.1517, Gen var: 0.0000, Log likelihood: -9.5414
+2024-11-29 18:46:19 - INFO - Running cot with 2000
+2024-11-29 18:46:45 - INFO - [LLAMBO_CoT_2000] Average regret: 0.1775, Best regret: 0.1000, Score spread: 0.0388, Mahalanobis distance: 2.8798, Gen var: 0.0000, Log likelihood: -9.4441
+2024-11-29 18:46:45 - INFO - Running cot with 3000
+2024-11-29 18:47:07 - INFO - [LLAMBO_CoT_3000] Average regret: 0.2105, Best regret: 0.1000, Score spread: 0.0465, Mahalanobis distance: 3.3956, Gen var: 0.0000, Log likelihood: -9.3719
+2024-11-29 18:47:07 - INFO - ========================================================================================================================================================================================================
+2024-11-29 18:47:07 - INFO - Evaluating sampling with seed 1...
+2024-11-29 18:47:08 - INFO - [TPE_IN] Average regret: 0.5225, Best regret: 0.1000, Score spread: 0.2080, Mahalanobis distance: 4.1944, Gen var: 0.6907, Log likelihood: -10.5625
+2024-11-29 18:47:08 - INFO - [TPE_MULTI] Average regret: 0.5275, Best regret: 0.1500, Score spread: 0.2169, Mahalanobis distance: 3.9614, Gen var: 2.1936, Log likelihood: -10.3467
+2024-11-29 18:47:08 - INFO - [RANDOM] Average regret: 0.8675, Best regret: 0.1500, Score spread: 0.1504, Mahalanobis distance: 5.6526, Gen var: 18.6600, Log likelihood: -14.6444
+2024-11-29 18:47:11 - INFO - [LLAMBO] Average regret: 0.2275, Best regret: 0.1000, Score spread: 0.0516, Mahalanobis distance: 4.0574, Gen var: 0.0000, Log likelihood: -10.5529
+2024-11-29 18:47:11 - INFO - Running cot with 500
+2024-11-29 18:47:33 - INFO - [LLAMBO_CoT_500] Average regret: 0.2500, Best regret: 0.1500, Score spread: 0.0414, Mahalanobis distance: 3.9922, Gen var: 0.0000, Log likelihood: -10.8497
+2024-11-29 18:47:33 - INFO - Running cot with 1000
+2024-11-29 18:47:59 - INFO - [LLAMBO_CoT_1000] Average regret: 0.2344, Best regret: 0.1000, Score spread: 0.0526, Mahalanobis distance: 3.9327, Gen var: 0.0000, Log likelihood: -10.6417
+2024-11-29 18:47:59 - INFO - Running cot with 2000
+2024-11-29 18:48:21 - INFO - [LLAMBO_CoT_2000] Average regret: 0.2250, Best regret: 0.1000, Score spread: 0.0469, Mahalanobis distance: 3.8945, Gen var: 0.0000, Log likelihood: -10.7350
+2024-11-29 18:48:21 - INFO - Running cot with 3000
+2024-11-29 18:48:43 - INFO - [LLAMBO_CoT_3000] Average regret: 0.2361, Best regret: 0.1500, Score spread: 0.0546, Mahalanobis distance: 3.7999, Gen var: 0.0000, Log likelihood: -10.5467
+2024-11-29 18:48:43 - INFO - ========================================================================================================================================================================================================
+2024-11-29 18:48:43 - INFO - Evaluating sampling with seed 2...
+2024-11-29 18:48:43 - INFO - [TPE_IN] Average regret: 0.5500, Best regret: 0.1000, Score spread: 0.2079, Mahalanobis distance: 4.4095, Gen var: 3.1966, Log likelihood: -11.6047
+2024-11-29 18:48:43 - INFO - [TPE_MULTI] Average regret: 0.4150, Best regret: 0.1000, Score spread: 0.1945, Mahalanobis distance: 3.7436, Gen var: 2.8178, Log likelihood: -11.1253
+2024-11-29 18:48:43 - INFO - [RANDOM] Average regret: 0.9025, Best regret: 0.3000, Score spread: 0.1292, Mahalanobis distance: 5.8953, Gen var: 67.3577, Log likelihood: -15.5217
+2024-11-29 18:48:47 - INFO - [LLAMBO] Average regret: 0.2194, Best regret: 0.1000, Score spread: 0.0572, Mahalanobis distance: 2.8947, Gen var: 0.0000, Log likelihood: -8.6107
+2024-11-29 18:48:47 - INFO - Running cot with 500
+2024-11-29 18:49:12 - INFO - [LLAMBO_CoT_500] Average regret: 0.2375, Best regret: 0.1000, Score spread: 0.0515, Mahalanobis distance: 2.6496, Gen var: 0.0000, Log likelihood: -7.8659
+2024-11-29 18:49:12 - INFO - Running cot with 1000
+2024-11-29 18:49:34 - INFO - [LLAMBO_CoT_1000] Average regret: 0.1579, Best regret: 0.1000, Score spread: 0.0453, Mahalanobis distance: 2.4510, Gen var: 0.0000, Log likelihood: -7.7206
+2024-11-29 18:49:34 - INFO - Running cot with 2000
+2024-11-29 18:50:00 - INFO - [LLAMBO_CoT_2000] Average regret: 0.1447, Best regret: 0.0500, Score spread: 0.0476, Mahalanobis distance: 2.5142, Gen var: 0.0000, Log likelihood: -7.7100
+2024-11-29 18:50:00 - INFO - Running cot with 3000
+2024-11-29 18:50:23 - INFO - [LLAMBO_CoT_3000] Average regret: 0.1594, Best regret: 0.0500, Score spread: 0.0512, Mahalanobis distance: 2.5320, Gen var: 0.0000, Log likelihood: -7.7768
+2024-11-29 18:50:23 - INFO - ========================================================================================================================================================================================================
+2024-11-29 18:50:23 - INFO - Evaluating sampling with seed 3...
+2024-11-29 18:50:23 - INFO - [TPE_IN] Average regret: 0.4375, Best regret: 0.1000, Score spread: 0.1844, Mahalanobis distance: 4.6967, Gen var: 0.2761, Log likelihood: -9.8749
+2024-11-29 18:50:24 - INFO - [TPE_MULTI] Average regret: 0.4300, Best regret: 0.1000, Score spread: 0.1893, Mahalanobis distance: 4.4121, Gen var: 0.3775, Log likelihood: -9.4604
+2024-11-29 18:50:24 - INFO - [RANDOM] Average regret: 0.8400, Best regret: 0.1000, Score spread: 0.1801, Mahalanobis distance: 7.3265, Gen var: 5.1899, Log likelihood: -14.1233
+2024-11-29 18:50:29 - INFO - [LLAMBO] Average regret: 0.2100, Best regret: 0.1000, Score spread: 0.0509, Mahalanobis distance: 3.1362, Gen var: 0.0000, Log likelihood: -8.8029
+2024-11-29 18:50:29 - INFO - Running cot with 500
+2024-11-29 18:50:59 - INFO - [LLAMBO_CoT_500] Average regret: 0.1763, Best regret: 0.1000, Score spread: 0.0513, Mahalanobis distance: 3.5705, Gen var: 0.0000, Log likelihood: -8.5371
+2024-11-29 18:50:59 - INFO - Running cot with 1000
+2024-11-29 18:51:25 - INFO - [LLAMBO_CoT_1000] Average regret: 0.1650, Best regret: 0.0500, Score spread: 0.0542, Mahalanobis distance: 3.0548, Gen var: 0.0000, Log likelihood: -8.2364
+2024-11-29 18:51:25 - INFO - Running cot with 2000
+2024-11-29 18:52:43 - INFO - [LLAMBO_CoT_2000] Average regret: 0.2158, Best regret: 0.1000, Score spread: 0.0494, Mahalanobis distance: 3.3055, Gen var: 0.0000, Log likelihood: -8.3030
+2024-11-29 18:52:43 - INFO - Running cot with 3000
+2024-11-29 18:53:11 - INFO - [LLAMBO_CoT_3000] Average regret: 0.1800, Best regret: 0.1000, Score spread: 0.0476, Mahalanobis distance: 3.0548, Gen var: 0.0000, Log likelihood: -8.4006
+2024-11-29 18:53:11 - INFO - ========================================================================================================================================================================================================
+2024-11-29 18:53:11 - INFO - Evaluating sampling with seed 4...
+2024-11-29 18:53:11 - INFO - [TPE_IN] Average regret: 0.5025, Best regret: 0.1000, Score spread: 0.2094, Mahalanobis distance: 4.8904, Gen var: 4.0904, Log likelihood: -10.3094
+2024-11-29 18:53:12 - INFO - [TPE_MULTI] Average regret: 0.4300, Best regret: 0.1000, Score spread: 0.2116, Mahalanobis distance: 4.7469, Gen var: 1.0145, Log likelihood: -10.6347
+2024-11-29 18:53:12 - INFO - [RANDOM] Average regret: 0.7875, Best regret: 0.2500, Score spread: 0.1650, Mahalanobis distance: 5.8194, Gen var: 27.8759, Log likelihood: -12.6279
+2024-11-29 18:53:15 - INFO - [LLAMBO] Average regret: 0.1842, Best regret: 0.1000, Score spread: 0.0534, Mahalanobis distance: 3.6036, Gen var: 0.0000, Log likelihood: -8.3063
+2024-11-29 18:53:15 - INFO - Running cot with 500
+2024-11-29 18:53:40 - INFO - [LLAMBO_CoT_500] Average regret: 0.1211, Best regret: 0.0500, Score spread: 0.0353, Mahalanobis distance: 2.9376, Gen var: 0.0000, Log likelihood: -7.2943
+2024-11-29 18:53:40 - INFO - Running cot with 1000
+2024-11-29 18:54:03 - INFO - [LLAMBO_CoT_1000] Average regret: 0.1722, Best regret: 0.1000, Score spread: 0.0492, Mahalanobis distance: 2.9489, Gen var: 0.0000, Log likelihood: -7.6445
+2024-11-29 18:54:03 - INFO - Running cot with 2000
+2024-11-29 18:54:29 - INFO - [LLAMBO_CoT_2000] Average regret: 0.1816, Best regret: 0.1000, Score spread: 0.0557, Mahalanobis distance: 3.0417, Gen var: 0.0000, Log likelihood: -7.6921
+2024-11-29 18:54:29 - INFO - Running cot with 3000
+2024-11-29 18:55:01 - INFO - [LLAMBO_CoT_3000] Average regret: 0.1219, Best regret: 0.0500, Score spread: 0.0310, Mahalanobis distance: 2.8321, Gen var: 0.0000, Log likelihood: -7.4661
+2024-11-29 18:55:01 - INFO - ========================================================================================================================================================================================================
+2024-11-29 18:55:01 - INFO - [LLAMBO] 5 evaluation runs complete! Total cost: $0.0460

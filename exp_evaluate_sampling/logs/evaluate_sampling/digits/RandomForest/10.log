@@ -1,0 +1,14 @@
+2024-11-29 02:46:50 - INFO - ========================================================================================================================================================================================================
+2024-11-29 02:46:50 - INFO - Evaluating sampling performance on digits with RandomForest and 10 observed configurations... Executing 1 runs.
+2024-11-29 02:46:50 - INFO - ========================================================================================================================================================================================================
+2024-11-29 02:46:50 - INFO - Collecting configurations - this might take a while...
+2024-11-29 02:47:06 - INFO - Global best score: 0.8889, global worst score: 0.0806
+2024-11-29 02:47:06 - INFO - ========================================================================================================================================================================================================
+2024-11-29 02:47:06 - INFO - Evaluating sampling with seed 0...
+2024-11-29 02:47:07 - INFO - [TPE_IN] Average regret: 0.8981, Best regret: 0.3780, Score spread: 0.1534, Mahalanobis distance: 10.4862, Gen var: 202.1764, Log likelihood: -59.6141
+2024-11-29 02:47:07 - INFO - [TPE_MULTI] Average regret: 0.8943, Best regret: 0.2405, Score spread: 0.1723, Mahalanobis distance: 10.6134, Gen var: 250.5582, Log likelihood: -56.9088
+2024-11-29 02:47:07 - INFO - [RANDOM] Average regret: 0.9529, Best regret: 0.4433, Score spread: 0.1163, Mahalanobis distance: 19.0303, Gen var: 1820.5485, Log likelihood: -156.2173
+2024-11-29 02:47:10 - INFO - [LLAMBO] Average regret: 0.4330, Best regret: 0.2921, Score spread: 0.0932, Mahalanobis distance: 2.4577, Gen var: 0.0000, Log likelihood: -6.8353
+2024-11-29 02:47:25 - INFO - [LLAMBO_CoT] Average regret: 0.4167, Best regret: 0.2405, Score spread: 0.0793, Mahalanobis distance: 2.1363, Gen var: 0.0000, Log likelihood: -6.5335
+2024-11-29 02:47:25 - INFO - ========================================================================================================================================================================================================
+2024-11-29 02:47:25 - INFO - [LLAMBO] 1 evaluation runs complete! Total cost: $0.0092

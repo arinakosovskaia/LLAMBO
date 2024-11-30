@@ -1,6 +1,5 @@
 import os
 import time
-import openai
 import asyncio
 import re
 import numpy as np
@@ -8,13 +7,16 @@ from scipy.stats import norm
 from llambo.rate_limiter import RateLimiter
 from llambo.discriminative_sm_utils import gen_prompt_tempates
 from openai import AsyncOpenAI
-from openai import Timeout, RateLimitError, APIError
 
+#ENGINE  = "gpt-3.5-turbo-0125"
+#client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-openai.api_base = os.environ.get("OPENAI_API_BASE")
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+ENGINE  = "meta-llama/Meta-Llama-3.1-70B-Instruct"
+client = AsyncOpenAI(
+    base_url="https://api.studio.nebius.ai/v1/",
+    api_key=os.environ.get("NEBIUS_API_KEY"),
+    )
 
-client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 class LLM_DIS_SM:
     def __init__(self, task_context, n_gens, lower_is_better, 
@@ -22,7 +24,8 @@ class LLM_DIS_SM:
                  use_recalibration=False,
                  rate_limiter=None, warping_transformer=None,
                  verbose=False, chat_engine=None, 
-                 prompt_setting=None, shuffle_features=False):
+                 prompt_setting=None, shuffle_features=False,
+                 max_reasoning_tokens=300, prompting='zero_shot'):
         '''Initialize the forward LLM surrogate model. This is modelling p(y|x) as in GP/SMAC etc.'''
         self.task_context = task_context
         self.n_gens = n_gens
@@ -46,12 +49,12 @@ class LLM_DIS_SM:
         self.verbose = verbose
         self.prompt_setting = prompt_setting
         self.shuffle_features = shuffle_features
+        self.max_reasoning_tokens = max_reasoning_tokens
+        if max_reasoning_tokens is None:
+            self.max_reasoning_tokens=0
+        self.prompting = prompting
 
         assert type(self.shuffle_features) == bool, 'shuffle_features must be a boolean'
-
-        CONCURRENCY_LIMIT = 5
-
-        self.semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
 
     async def _async_generate(self, few_shot_template, query_example, query_idx):
         '''Generate a response from the LLM async.'''
@@ -59,7 +62,6 @@ class LLM_DIS_SM:
         message.append({"role": "system","content": "You are an AI assistant that helps people find information.."})
         user_message = few_shot_template.format(Q=query_example['Q'])
         message.append({"role": "user", "content": user_message})
-        print("USER MESSAGE:", user_message)
 
         MAX_RETRIES = 3
         resp = None
@@ -73,12 +75,12 @@ class LLM_DIS_SM:
                     model=self.chat_engine,
                     messages=message,
                     temperature=0.7,
-                    max_tokens=8,
+                    max_tokens=80+self.max_reasoning_tokens,
                     top_p=0.95,
                     n=max(n_preds, 3),
-                    timeout=10
+                    timeout=100
                 )
-                self.rate_limiter.add_request(request_token_count=resp.usage.total_tokens, current_time=time.time())
+                self.rate_limiter.add_request(request_token_count=resp.usage.total_tokens, current_time=time.time())               
                 break
 
             except Exception as e:
@@ -200,7 +202,8 @@ class LLM_DIS_SM:
         all_prompt_templates, query_examples = gen_prompt_tempates(self.task_context, observed_configs, observed_fvals, candidate_configs, 
                                                                     n_prompts=self.n_templates, bootstrapping=self.bootstrapping,
                                                                     use_context=use_context, use_feature_semantics=use_feature_semantics, 
-                                                                    shuffle_features=self.shuffle_features, apply_warping=self.apply_warping)
+                                                                    shuffle_features=self.shuffle_features, apply_warping=self.apply_warping,
+                                                                    prompting=self.prompting, max_reasoning_tokens=self.max_reasoning_tokens)
 
         print('*'*100)
         print(f'Number of all_prompt_templates: {len(all_prompt_templates)}')
@@ -263,7 +266,9 @@ class LLM_DIS_SM:
             candidate_configs = self.warping_transformer.unwarp(candidate_configs)
 
         best_point = candidate_configs.iloc[[best_point_index], :]  # return selected point as dataframe not series
+        best_point_std = y_std[best_point_index]
+        best_point_mean = y_mean[best_point_index]
 
-        return best_point, cost, time_taken
+        return best_point, best_point_mean, best_point_std, cost, time_taken
 
 

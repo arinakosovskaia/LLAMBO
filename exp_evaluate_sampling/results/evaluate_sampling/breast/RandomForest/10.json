@@ -1,0 +1,834 @@
+{
+    "TPE_IN": {
+        "av_regret": [
+            0.2833333333333332
+        ],
+        "best_regret": [
+            0.0
+        ],
+        "score_spread": [
+            0.14246961629286392
+        ],
+        "ml_dist": [
+            4.224246522090417
+        ],
+        "gen_var": [
+            3.034098402629004
+        ],
+        "ll": [
+            -11.378180737338143
+        ],
+        "proposed_points": [
+            [
+                {
+                    "max_depth": 11,
+                    "max_features": 0.3601973280385809,
+                    "min_impurity_decrease": 0.0677532269806344,
+                    "min_samples_leaf": 0.20918907600434491,
+                    "min_samples_split": 0.43317604597168036,
+                    "min_weight_fraction_leaf": 0.2777707058038409
+                },
+                {
+                    "max_depth": 4,
+                    "max_features": 0.47126241723602147,
+                    "min_impurity_decrease": 0.10651676766830212,
+                    "min_samples_leaf": 0.07647951532086848,
+                    "min_samples_split": 0.12478924832744973,
+                    "min_weight_fraction_leaf": 0.07978987895095169
+                },
+                {
+                    "max_depth": 8,
+                    "max_features": 0.7285451158926056,
+                    "min_impurity_decrease": 0.05057401931467545,
+                    "min_samples_leaf": 0.06854551925155304,
+                    "min_samples_split": 0.40155057825249746,
+                    "min_weight_fraction_leaf": 0.39422858173227926
+                },
+                {
+                    "max_depth": 3,
+                    "max_features": 0.2646428597480283,
+                    "min_impurity_decrease": 0.15395742551929734,
+                    "min_samples_leaf": 0.2297846484237598,
+                    "min_samples_split": 0.25302635483444447,
+                    "min_weight_fraction_leaf": 0.10806477514298005
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.7618885940417057,
+                    "min_impurity_decrease": 0.4442665696775482,
+                    "min_samples_leaf": 0.3083064289684799,
+                    "min_samples_split": 0.061098338284456606,
+                    "min_weight_fraction_leaf": 0.07956435346934114
+                },
+                {
+                    "max_depth": 4,
+                    "max_features": 0.3648271330974121,
+                    "min_impurity_decrease": 0.11018720434363202,
+                    "min_samples_leaf": 0.1861206338619874,
+                    "min_samples_split": 0.5062534350346314,
+                    "min_weight_fraction_leaf": 0.10919627827122999
+                },
+                {
+                    "max_depth": 7,
+                    "max_features": 0.4528198694368241,
+                    "min_impurity_decrease": 0.03951854270313687,
+                    "min_samples_leaf": 0.03949970992563232,
+                    "min_samples_split": 0.6162528826971405,
+                    "min_weight_fraction_leaf": 0.023501092787169622
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.3859399499154273,
+                    "min_impurity_decrease": 0.2366636607273343,
+                    "min_samples_leaf": 0.1611146213698417,
+                    "min_samples_split": 0.5576738802923182,
+                    "min_weight_fraction_leaf": 0.24714143932073013
+                },
+                {
+                    "max_depth": 3,
+                    "max_features": 0.3711741888453669,
+                    "min_impurity_decrease": 0.18798965744415616,
+                    "min_samples_leaf": 0.11925818490972848,
+                    "min_samples_split": 0.2618474697401657,
+                    "min_weight_fraction_leaf": 0.16008206786135187
+                },
+                {
+                    "max_depth": 1,
+                    "max_features": 0.24583388900008607,
+                    "min_impurity_decrease": 0.4000990494893114,
+                    "min_samples_leaf": 0.27652032336747395,
+                    "min_samples_split": 0.2005770007942922,
+                    "min_weight_fraction_leaf": 0.26813039087749524
+                },
+                {
+                    "max_depth": 14,
+                    "max_features": 0.1868230555097778,
+                    "min_impurity_decrease": 0.13811132510852514,
+                    "min_samples_leaf": 0.4196666098092323,
+                    "min_samples_split": 0.15092866824028084,
+                    "min_weight_fraction_leaf": 0.05384385316409233
+                },
+                {
+                    "max_depth": 3,
+                    "max_features": 0.3328888869538037,
+                    "min_impurity_decrease": 0.25436799112391806,
+                    "min_samples_leaf": 0.2862904556585973,
+                    "min_samples_split": 0.2642592340452381,
+                    "min_weight_fraction_leaf": 0.06806267962918826
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.30100302983013266,
+                    "min_impurity_decrease": 0.10223066456951407,
+                    "min_samples_leaf": 0.1287309971839959,
+                    "min_samples_split": 0.14418472763599774,
+                    "min_weight_fraction_leaf": 0.12991665292287938
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.8486604154929247,
+                    "min_impurity_decrease": 0.1294675967196326,
+                    "min_samples_leaf": 0.16345706391784243,
+                    "min_samples_split": 0.290347500850686,
+                    "min_weight_fraction_leaf": 0.047299362495688946
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.02077125071922481,
+                    "min_impurity_decrease": 0.13000891371445736,
+                    "min_samples_leaf": 0.0696570930946152,
+                    "min_samples_split": 0.262683170664218,
+                    "min_weight_fraction_leaf": 0.07947561802744918
+                },
+                {
+                    "max_depth": 3,
+                    "max_features": 0.8630837669791993,
+                    "min_impurity_decrease": 0.13585162357581804,
+                    "min_samples_leaf": 0.2754444825656739,
+                    "min_samples_split": 0.18644112145720054,
+                    "min_weight_fraction_leaf": 0.22167660807624115
+                },
+                {
+                    "max_depth": 10,
+                    "max_features": 0.41815584573928455,
+                    "min_impurity_decrease": 0.3265291220917187,
+                    "min_samples_leaf": 0.3805379404734614,
+                    "min_samples_split": 0.08571933104904567,
+                    "min_weight_fraction_leaf": 0.22235512974899274
+                },
+                {
+                    "max_depth": 1,
+                    "max_features": 0.8138319607007507,
+                    "min_impurity_decrease": 0.06926537964889307,
+                    "min_samples_leaf": 0.20698409057996112,
+                    "min_samples_split": 0.17651309542427546,
+                    "min_weight_fraction_leaf": 0.07834115625984117
+                },
+                {
+                    "max_depth": 8,
+                    "max_features": 0.566372595124178,
+                    "min_impurity_decrease": 0.2188939543200623,
+                    "min_samples_leaf": 0.08879121442300822,
+                    "min_samples_split": 0.09271396191554389,
+                    "min_weight_fraction_leaf": 0.2006603566549419
+                },
+                {
+                    "max_depth": 10,
+                    "max_features": 0.5024805933213005,
+                    "min_impurity_decrease": 0.20023617127731289,
+                    "min_samples_leaf": 0.16346407499862423,
+                    "min_samples_split": 0.01840186265456551,
+                    "min_weight_fraction_leaf": 0.06167188670052815
+                }
+            ]
+        ],
+        "proposed_points_evaluation": [
+            [
+                0.9210526315789473,
+                0.956140350877193,
+                0.9122807017543859,
+                0.9298245614035088,
+                0.5877192982456141,
+                0.9473684210526315,
+                0.9385964912280702,
+                0.9473684210526315,
+                0.9473684210526315,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.9210526315789473,
+                0.9473684210526315,
+                0.9824561403508771,
+                0.9298245614035088,
+                0.9210526315789473,
+                0.5877192982456141,
+                0.9298245614035088,
+                0.9736842105263158,
+                0.956140350877193
+            ]
+        ]
+    },
+    "TPE_MULTI": {
+        "av_regret": [
+            0.271111111111111
+        ],
+        "best_regret": [
+            0.0
+        ],
+        "score_spread": [
+            0.14455331266747026
+        ],
+        "ml_dist": [
+            4.031662547310947
+        ],
+        "gen_var": [
+            8.876280196987377
+        ],
+        "ll": [
+            -12.377319395399352
+        ],
+        "proposed_points": [
+            [
+                {
+                    "max_depth": 11,
+                    "max_features": 0.6779555102724139,
+                    "min_impurity_decrease": 0.12201156358079368,
+                    "min_samples_leaf": 0.04849992846729836,
+                    "min_samples_split": 0.05770463196418296,
+                    "min_weight_fraction_leaf": 0.022379434272226016
+                },
+                {
+                    "max_depth": 9,
+                    "max_features": 0.6970438259778318,
+                    "min_impurity_decrease": 0.011133117692288919,
+                    "min_samples_leaf": 0.47441515231770126,
+                    "min_samples_split": 0.8182180146427267,
+                    "min_weight_fraction_leaf": 0.1157360388276932
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.7623295647322703,
+                    "min_impurity_decrease": 0.16088202130274115,
+                    "min_samples_leaf": 0.10113349316097821,
+                    "min_samples_split": 0.0866518770524358,
+                    "min_weight_fraction_leaf": 0.13606184178152655
+                },
+                {
+                    "max_depth": 3,
+                    "max_features": 0.7884076721308113,
+                    "min_impurity_decrease": 0.1448548591213673,
+                    "min_samples_leaf": 0.18086141736926734,
+                    "min_samples_split": 0.062074138833842114,
+                    "min_weight_fraction_leaf": 0.11591503644160864
+                },
+                {
+                    "max_depth": 1,
+                    "max_features": 0.2798896061534272,
+                    "min_impurity_decrease": 0.11134948626173109,
+                    "min_samples_leaf": 0.036693743825955305,
+                    "min_samples_split": 0.6176769235025561,
+                    "min_weight_fraction_leaf": 0.2735979969034873
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.11161739552662758,
+                    "min_impurity_decrease": 0.3388840090024694,
+                    "min_samples_leaf": 0.22241138313970593,
+                    "min_samples_split": 0.136289091162832,
+                    "min_weight_fraction_leaf": 0.2477778584904927
+                },
+                {
+                    "max_depth": 8,
+                    "max_features": 0.7410628999901613,
+                    "min_impurity_decrease": 0.1947188082260518,
+                    "min_samples_leaf": 0.07802401869975843,
+                    "min_samples_split": 0.1539280303451104,
+                    "min_weight_fraction_leaf": 0.12243750029446945
+                },
+                {
+                    "max_depth": 10,
+                    "max_features": 0.9229455779481698,
+                    "min_impurity_decrease": 0.3047000995131093,
+                    "min_samples_leaf": 0.22217635258450144,
+                    "min_samples_split": 0.1803193792471819,
+                    "min_weight_fraction_leaf": 0.23544807552123811
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.5624719439555723,
+                    "min_impurity_decrease": 0.11390540394938695,
+                    "min_samples_leaf": 0.09281094319062341,
+                    "min_samples_split": 0.0812441916087728,
+                    "min_weight_fraction_leaf": 0.19331982995173724
+                },
+                {
+                    "max_depth": 4,
+                    "max_features": 0.5802289139909961,
+                    "min_impurity_decrease": 0.03147851374982459,
+                    "min_samples_leaf": 0.1898654036255592,
+                    "min_samples_split": 0.033038367236486066,
+                    "min_weight_fraction_leaf": 0.29707148764469116
+                },
+                {
+                    "max_depth": 4,
+                    "max_features": 0.015877239296700763,
+                    "min_impurity_decrease": 0.40378870351829843,
+                    "min_samples_leaf": 0.34594000476236686,
+                    "min_samples_split": 0.7171810745294209,
+                    "min_weight_fraction_leaf": 0.3764286638930878
+                },
+                {
+                    "max_depth": 4,
+                    "max_features": 0.6497966058544389,
+                    "min_impurity_decrease": 0.26003523243665794,
+                    "min_samples_leaf": 0.14000584431474336,
+                    "min_samples_split": 0.09759159763129308,
+                    "min_weight_fraction_leaf": 0.025749268967424202
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.676587026955843,
+                    "min_impurity_decrease": 0.13066001193485577,
+                    "min_samples_leaf": 0.22240411583882808,
+                    "min_samples_split": 0.15593273230084687,
+                    "min_weight_fraction_leaf": 0.03463437256426877
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.2596070959756398,
+                    "min_impurity_decrease": 0.27495709177671257,
+                    "min_samples_leaf": 0.1430261272058948,
+                    "min_samples_split": 0.31934297476345913,
+                    "min_weight_fraction_leaf": 0.09994930873328402
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.5324154202275833,
+                    "min_impurity_decrease": 0.18798965744415616,
+                    "min_samples_leaf": 0.0785347646948267,
+                    "min_samples_split": 0.15023253468411338,
+                    "min_weight_fraction_leaf": 0.2271100023548426
+                },
+                {
+                    "max_depth": 4,
+                    "max_features": 0.9171277265328385,
+                    "min_impurity_decrease": 0.08906009228511946,
+                    "min_samples_leaf": 0.029280675362443033,
+                    "min_samples_split": 0.08624832760498537,
+                    "min_weight_fraction_leaf": 0.04719180165676607
+                },
+                {
+                    "max_depth": 13,
+                    "max_features": 0.6258316005073896,
+                    "min_impurity_decrease": 0.4322283750617153,
+                    "min_samples_leaf": 0.39195259826732115,
+                    "min_samples_split": 0.2005770007942922,
+                    "min_weight_fraction_leaf": 0.4353693899362243
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.45785947830830453,
+                    "min_impurity_decrease": 0.15626541420429563,
+                    "min_samples_leaf": 0.05150524483790714,
+                    "min_samples_split": 0.17994899289640814,
+                    "min_weight_fraction_leaf": 0.09986589231581482
+                },
+                {
+                    "max_depth": 13,
+                    "max_features": 0.01739637292996732,
+                    "min_impurity_decrease": 0.25515799302653774,
+                    "min_samples_leaf": 0.21190897782977805,
+                    "min_samples_split": 0.23542045288911878,
+                    "min_weight_fraction_leaf": 0.07078295869268963
+                },
+                {
+                    "max_depth": 11,
+                    "max_features": 0.4709737370700611,
+                    "min_impurity_decrease": 0.10530686948055401,
+                    "min_samples_leaf": 0.16210967874377766,
+                    "min_samples_split": 0.12090747180864203,
+                    "min_weight_fraction_leaf": 0.2680971821376597
+                }
+            ]
+        ],
+        "proposed_points_evaluation": [
+            [
+                0.9385964912280702,
+                0.5877192982456141,
+                0.9385964912280702,
+                0.9649122807017544,
+                0.9385964912280702,
+                0.5877192982456141,
+                0.9385964912280702,
+                0.9298245614035088,
+                0.9736842105263158,
+                0.9473684210526315,
+                0.5877192982456141,
+                0.9473684210526315,
+                0.9298245614035088,
+                0.9473684210526315,
+                0.956140350877193,
+                0.9824561403508771,
+                0.5877192982456141,
+                0.9473684210526315,
+                0.9210526315789473,
+                0.956140350877193
+            ]
+        ]
+    },
+    "RANDOM": {
+        "av_regret": [
+            0.7733333333333333
+        ],
+        "best_regret": [
+            0.0
+        ],
+        "score_spread": [
+            0.15572584444230803
+        ],
+        "ml_dist": [
+            6.131353627920637
+        ],
+        "gen_var": [
+            143.54060218895896
+        ],
+        "ll": [
+            -19.604592696854507
+        ],
+        "proposed_points": [
+            [
+                {
+                    "max_depth": 6,
+                    "max_features": 0.9417000202817178,
+                    "min_impurity_decrease": 0.36599697090570255,
+                    "min_samples_leaf": 0.29735607241457757,
+                    "min_samples_split": 0.1628982676335878,
+                    "min_weight_fraction_leaf": 0.08487736976137726
+                },
+                {
+                    "max_depth": 1,
+                    "max_features": 0.8588526228594364,
+                    "min_impurity_decrease": 0.3005575058716044,
+                    "min_samples_leaf": 0.34987483734210184,
+                    "min_samples_split": 0.0301728044098864,
+                    "min_weight_fraction_leaf": 0.47555672903775725
+                },
+                {
+                    "max_depth": 13,
+                    "max_features": 0.21809232846471063,
+                    "min_impurity_decrease": 0.09091248360355031,
+                    "min_samples_leaf": 0.09803416472964822,
+                    "min_samples_split": 0.308157398100347,
+                    "min_weight_fraction_leaf": 0.26188308718347414
+                },
+                {
+                    "max_depth": 7,
+                    "max_features": 0.29540455739408106,
+                    "min_impurity_decrease": 0.30592644736118974,
+                    "min_samples_leaf": 0.07695705311298007,
+                    "min_samples_split": 0.29630175556451377,
+                    "min_weight_fraction_leaf": 0.18585368478097203
+                },
+                {
+                    "max_depth": 7,
+                    "max_features": 0.7794724421651533,
+                    "min_impurity_decrease": 0.09983689107917987,
+                    "min_samples_leaf": 0.25683253043853355,
+                    "min_samples_split": 0.5905662774848016,
+                    "min_weight_fraction_leaf": 0.03229619810559891
+                },
+                {
+                    "max_depth": 10,
+                    "max_features": 0.1771136412135457,
+                    "min_impurity_decrease": 0.03252579649263976,
+                    "min_samples_leaf": 0.4654650578816,
+                    "min_samples_split": 0.9563193924130682,
+                    "min_weight_fraction_leaf": 0.3980307270959013
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.10571867172625618,
+                    "min_impurity_decrease": 0.34211651325607845,
+                    "min_samples_leaf": 0.22127319699500864,
+                    "min_samples_split": 0.12959747014788325,
+                    "min_weight_fraction_leaf": 0.24768491685340968
+                },
+                {
+                    "max_depth": 1,
+                    "max_features": 0.9011339940372064,
+                    "min_impurity_decrease": 0.12938999080000846,
+                    "min_samples_leaf": 0.3280106964899113,
+                    "min_samples_split": 0.31547685456762276,
+                    "min_weight_fraction_leaf": 0.2596326501653492
+                },
+                {
+                    "max_depth": 9,
+                    "max_features": 0.19115736641501652,
+                    "min_impurity_decrease": 0.4847923138822793,
+                    "min_samples_leaf": 0.38206375521333497,
+                    "min_samples_split": 0.9307089627329054,
+                    "min_weight_fraction_leaf": 0.43951712820527145
+                },
+                {
+                    "max_depth": 9,
+                    "max_features": 0.9134367503226545,
+                    "min_impurity_decrease": 0.04424625102595975,
+                    "min_samples_leaf": 0.10407177396118969,
+                    "min_samples_split": 0.05432274313232731,
+                    "min_weight_fraction_leaf": 0.1661585587663669
+                },
+                {
+                    "max_depth": 6,
+                    "max_features": 0.275922051138418,
+                    "min_impurity_decrease": 0.41436875457596467,
+                    "min_samples_leaf": 0.18124159681292284,
+                    "min_samples_split": 0.28531581949363316,
+                    "min_weight_fraction_leaf": 0.2704941199159593
+                },
+                {
+                    "max_depth": 3,
+                    "max_features": 0.7961530411389589,
+                    "min_impurity_decrease": 0.03727532183988541,
+                    "min_samples_leaf": 0.4837057295682483,
+                    "min_samples_split": 0.7667998739107242,
+                    "min_weight_fraction_leaf": 0.10538352713640274
+                },
+                {
+                    "max_depth": 1,
+                    "max_features": 0.8091521998857375,
+                    "min_impurity_decrease": 0.35342867192380856,
+                    "min_samples_leaf": 0.3599234406596739,
+                    "min_samples_split": 0.7658449397522268,
+                    "min_weight_fraction_leaf": 0.04554143283236337
+                },
+                {
+                    "max_depth": 6,
+                    "max_features": 0.12355167833462712,
+                    "min_impurity_decrease": 0.43155171293779676,
+                    "min_samples_leaf": 0.3091831008772278,
+                    "min_samples_split": 0.3342800643555962,
+                    "min_weight_fraction_leaf": 0.04050800813729134
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.3286796555862121,
+                    "min_impurity_decrease": 0.36480308916903204,
+                    "min_samples_leaf": 0.3160275862505023,
+                    "min_samples_split": 0.8794684877248,
+                    "min_weight_fraction_leaf": 0.23666316407773566
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.7089798914785351,
+                    "min_impurity_decrease": 0.3803925243084487,
+                    "min_samples_leaf": 0.2794130548333582,
+                    "min_samples_split": 0.7655478363554697,
+                    "min_weight_fraction_leaf": 0.24702188625490756
+                },
+                {
+                    "max_depth": 8,
+                    "max_features": 0.42899019799137866,
+                    "min_impurity_decrease": 0.012709563372047594,
+                    "min_samples_leaf": 0.06178788495678614,
+                    "min_samples_split": 0.04080060197299957,
+                    "min_weight_fraction_leaf": 0.3154769974066146
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.5083992773414087,
+                    "min_impurity_decrease": 0.4537832369630465,
+                    "min_samples_leaf": 0.12966026999145996,
+                    "min_samples_split": 0.41217526457491716,
+                    "min_weight_fraction_leaf": 0.3726645465006634
+                },
+                {
+                    "max_depth": 4,
+                    "max_features": 0.08544031163221713,
+                    "min_impurity_decrease": 0.144875726456884,
+                    "min_samples_leaf": 0.0873862178819221,
+                    "min_samples_split": 0.9211036992957216,
+                    "min_weight_fraction_leaf": 0.39789778219092015
+                },
+                {
+                    "max_depth": 10,
+                    "max_features": 0.8640313783839634,
+                    "min_impurity_decrease": 0.40183603844955723,
+                    "min_samples_leaf": 0.09955362826529719,
+                    "min_samples_split": 0.8847078185201782,
+                    "min_weight_fraction_leaf": 0.2688842761195123
+                }
+            ]
+        ],
+        "proposed_points_evaluation": [
+            [
+                0.5877192982456141,
+                0.5877192982456141,
+                0.9649122807017544,
+                0.9298245614035088,
+                0.8947368421052632,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.9824561403508771,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.956140350877193,
+                0.5877192982456141,
+                0.5877192982456141,
+                0.5877192982456141
+            ]
+        ]
+    },
+    "LLAMBO": {
+        "av_regret": [
+            0.06666666666666654
+        ],
+        "best_regret": [
+            0.022222222222222015
+        ],
+        "score_spread": [
+            0.014938058215724914
+        ],
+        "ml_dist": [
+            3.3065115312635682
+        ],
+        "gen_var": [
+            3.7276184726332736e-16
+        ],
+        "ll": [
+            -9.219577352339837
+        ],
+        "proposed_points": [
+            [
+                {
+                    "max_depth": 6,
+                    "max_features": 0.566,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.087,
+                    "min_samples_split": 0.073,
+                    "min_weight_fraction_leaf": 0.073
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.1937,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.1321,
+                    "min_samples_split": 0.2945,
+                    "min_weight_fraction_leaf": 0.0937
+                },
+                {
+                    "max_depth": 6,
+                    "max_features": 0.55,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.08,
+                    "min_samples_split": 0.08,
+                    "min_weight_fraction_leaf": 0.08
+                },
+                {
+                    "max_depth": 6,
+                    "max_features": 0.63,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.11,
+                    "min_samples_split": 0.21,
+                    "min_weight_fraction_leaf": 0.11
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.193,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.131,
+                    "min_samples_split": 0.289,
+                    "min_weight_fraction_leaf": 0.091
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.193,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.132,
+                    "min_samples_split": 0.294,
+                    "min_weight_fraction_leaf": 0.092
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.186,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.128,
+                    "min_samples_split": 0.284,
+                    "min_weight_fraction_leaf": 0.093
+                },
+                {
+                    "max_depth": 3,
+                    "max_features": 0.287,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.123,
+                    "min_samples_split": 0.317,
+                    "min_weight_fraction_leaf": 0.083
+                },
+                {
+                    "max_depth": 8,
+                    "max_features": 0.27,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.22,
+                    "min_samples_split": 0.31,
+                    "min_weight_fraction_leaf": 0.14
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.187,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.132,
+                    "min_samples_split": 0.291,
+                    "min_weight_fraction_leaf": 0.092
+                },
+                {
+                    "max_depth": 11,
+                    "max_features": 0.831,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.117,
+                    "min_samples_split": 0.278,
+                    "min_weight_fraction_leaf": 0.081
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.191,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.131,
+                    "min_samples_split": 0.293,
+                    "min_weight_fraction_leaf": 0.091
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.23,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.11,
+                    "min_samples_split": 0.31,
+                    "min_weight_fraction_leaf": 0.05
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.43,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.11,
+                    "min_samples_split": 0.23,
+                    "min_weight_fraction_leaf": 0.05
+                },
+                {
+                    "max_depth": 5,
+                    "max_features": 0.67,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.23,
+                    "min_samples_split": 0.21,
+                    "min_weight_fraction_leaf": 0.04
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.194,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.132,
+                    "min_samples_split": 0.294,
+                    "min_weight_fraction_leaf": 0.092
+                },
+                {
+                    "max_depth": 6,
+                    "max_features": 0.492,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.113,
+                    "min_samples_split": 0.227,
+                    "min_weight_fraction_leaf": 0.082
+                },
+                {
+                    "max_depth": 2,
+                    "max_features": 0.191,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.131,
+                    "min_samples_split": 0.294,
+                    "min_weight_fraction_leaf": 0.092
+                },
+                {
+                    "max_depth": 11,
+                    "max_features": 0.42678,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.14631,
+                    "min_samples_split": 0.25621,
+                    "min_weight_fraction_leaf": 0.08259
+                },
+                {
+                    "max_depth": 7,
+                    "max_features": 0.8321,
+                    "min_impurity_decrease": 0.0,
+                    "min_samples_leaf": 0.1194,
+                    "min_samples_split": 0.2197,
+                    "min_weight_fraction_leaf": 0.0692
+                }
+            ]
+        ],
+        "proposed_points_evaluation": [
+            [
+                0.956140350877193,
+                0.9649122807017544,
+                0.956140350877193,
+                0.9385964912280702,
+                0.9649122807017544,
+                0.9649122807017544,
+                0.9649122807017544,
+                0.9649122807017544,
+                0.9298245614035088,
+                0.9649122807017544,
+                0.9298245614035088,
+                0.9649122807017544,
+                0.9649122807017544,
+                0.9736842105263158,
+                0.9298245614035088,
+                0.9649122807017544,
+                0.956140350877193,
+                0.9649122807017544,
+                0.9736842105263158,
+                0.9298245614035088
+            ]
+        ]
+    }
+}

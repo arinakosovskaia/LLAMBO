@@ -6,21 +6,63 @@ import openai
 import asyncio
 import numpy as np
 import pandas as pd
-from langchain import FewShotPromptTemplate
-from langchain import PromptTemplate
+from langchain.prompts.few_shot import FewShotPromptTemplate
+from langchain.prompts.prompt import PromptTemplate
+from openai import AsyncOpenAI, OpenAI
+import json
 from llambo.rate_limiter import RateLimiter
-from openai import AsyncOpenAI
-from openai import Timeout, RateLimitError, APIError
+from openai import OpenAI
 
-openai.api_base = os.environ.get("OPENAI_API_BASE")
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+#ENGINE  = "gpt-3.5-turbo-0125"
+#client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+def parse_cot_answer(text):
+    text = text.lower()
+    parts = text.split('"answer":')
+
+    if len(parts) < 2:
+        parts = text.split('answer:')
+    
+    if len(parts) < 2:
+        parts = text.split('## configuration ##')
+    
+    reasoning_part = parts[0].strip()
+    reasoning_part = reasoning_part.replace("reasoning\":", "").strip().strip(":").strip('"')
+    reasoning_part = reasoning_part.replace("reasoning", "").strip().strip(":").strip('"')
+    
+    answer_part = None
+    if len(parts) > 1:
+        answer_raw = parts[1].strip()
+        if "##" in answer_raw:
+            answer_part = answer_raw.split("##")[1].strip()
+    
+    return reasoning_part, answer_part
+
+ENGINE  = "meta-llama/Meta-Llama-3.1-70B-Instruct" #"gpt-3.5-turbo-0125"
+client = AsyncOpenAI(
+    base_url="https://api.studio.nebius.ai/v1/",
+    api_key=os.environ.get("NEBIUS_API_KEY"),
+    )
+
+client1 = AsyncOpenAI(
+    base_url="https://api.studio.nebius.ai/v1/",
+    api_key=os.environ.get("NEBIUS_API_KEY"),
+    )
+
+def make_cot_prompt(max_tokens):
+    cot_prompt = f"""Think step by step, clearly indicating how each hyperparameter is selected based on its effect on the performance. Your response must return a JSON object in the following format:
+    ""reasoning": "Let's break it down and solve step by step.", "answer": "## configuration ##"". 
+    Do not write more than {max_tokens} tokens in the reasoning part. Do not include NaNs or invalid numbers in configurations. Ensure all hyperparameters conform to defined ranges.
+    "Reasoning" must contain no more than {max_tokens} tokens. "Answer" only contain the predicted configuration, in the format ## configuration ##. 
+    """
+    return cot_prompt
 
 
 class LLM_ACQ:
     def __init__(self, task_context, n_candidates, n_templates, lower_is_better, 
                  jitter=False, rate_limiter=None, warping_transformer=None, chat_engine=None, 
-                 prompt_setting=None, shuffle_features=False):
+                 prompt_setting=None, shuffle_features=False, max_reasoning_tokens=300, prompting='zero_shot'):
+
         '''Initialize the LLM Acquisition function.'''
         self.task_context = task_context
         self.n_candidates = n_candidates
@@ -29,7 +71,7 @@ class LLM_ACQ:
         self.lower_is_better = lower_is_better
         self.apply_jitter = jitter
         if rate_limiter is None:
-            self.rate_limiter = RateLimiter(max_tokens=40000, time_frame=60)
+            self.rate_limiter = RateLimiter(max_tokens=100000, time_frame=60)
         else:
             self.rate_limiter = rate_limiter
         if warping_transformer is None:
@@ -41,8 +83,8 @@ class LLM_ACQ:
         self.chat_engine = chat_engine
         self.prompt_setting = prompt_setting
         self.shuffle_features = shuffle_features
-        CONCURRENCY_LIMIT = 5
-        self.semaphore = asyncio.Semaphore(CONCURRENCY_LIMIT)
+        self.max_reasoning_tokens = max_reasoning_tokens
+        self.prompting = prompting
 
         assert type(self.shuffle_features) == bool, 'shuffle_features must be a boolean'
 
@@ -263,8 +305,11 @@ Hyperparameter configuration: {Q}"""
             prefix += f"Recommend a configuration that can achieve the target performance of {jittered_desired_fval:.6f}. "
             if use_context in ['partial_context', 'full_context']:
                 prefix += "Do not recommend values at the minimum or maximum of allowable range, do not recommend rounded values. Recommend values with highest possible precision, as requested by the allowed ranges. "
-            prefix += f"Your response must only contain the predicted configuration, in the format ## configuration ##.\n"
-
+            
+            if self.prompting == 'cot':
+                prefix += make_cot_prompt(self.max_reasoning_tokens)
+            else:
+                prefix += f"Your response must only contain the predicted configuration, in the format ## configuration ##.\n"           
             suffix = """
 Performance: {A}
 Hyperparameter configuration:"""
@@ -297,16 +342,27 @@ Hyperparameter configuration:"""
                 try:
                     start_time = time.time()
                     self.rate_limiter.add_request(request_text=user_message, current_time=start_time)
-                    resp = await client.chat.completions.create(
-                        model=self.chat_engine,
-                        messages=message,
-                        temperature=0.8,
-                        max_tokens=500,
-                        top_p=0.95,
-                        n=self.n_gens,
-                        timeout=10
-                    )
-                    print("AF resp:", resp)
+                    if self.prompting == 'zero_shot':
+                        resp = await client.chat.completions.create(
+                            model=ENGINE,#self.chat_engine,
+                            messages=message,
+                            temperature=0.8,
+                            max_tokens=500,
+                            top_p=0.95,
+                            n=self.n_gens,
+                            timeout=100
+                        )
+                    else:
+                        resp = await client1.chat.completions.create(
+                            model=ENGINE,#self.chat_engine,
+                            messages=message,
+                            temperature=0.8,
+                            max_tokens=500+self.max_reasoning_tokens,
+                            top_p=0.95,
+                            n=self.n_gens,
+                            timeout=100
+                        )
+                    end_time = time.time()
                     self.rate_limiter.add_request(request_token_count=resp.usage.total_tokens, current_time=time.time())
                     break
 
@@ -324,6 +380,7 @@ Hyperparameter configuration:"""
 
         tot_tokens = resp.usage.total_tokens
         tot_cost = 0.0015*(resp.usage.prompt_tokens/1000) + 0.002*(resp.usage.completion_tokens/1000)
+        answer_time = end_time-start_time
 
         return resp, tot_cost, tot_tokens
 
@@ -353,13 +410,26 @@ Hyperparameter configuration:"""
     
     def _convert_to_json(self, response_str):
         '''Parse LLM response string into JSON.'''
-        pairs = response_str.split(',')
-        response_json = {}
-        for pair in pairs:
-            key, value = [x.strip() for x in pair.split(':')]
-            response_json[key] = float(value)
+        required_fields = [
+            "max_depth", "max_features", "min_impurity_decrease",
+            "min_samples_leaf", "min_samples_split", "min_weight_fraction_leaf"
+        ]
+        try:
+            pairs = response_str.split(',')
+            response_json = {}
+            for pair in pairs:
+                key, value = [x.strip() for x in pair.split(':')]
+                response_json[key] = float(value)
             
-        return response_json
+            if not all(field in response_json for field in required_fields):
+                print(f"Missing fields: {[field for field in required_fields if field not in response_json]}")
+                return None
+            
+            return response_json
+        
+        except Exception as e:
+            print(f"Error parsing response string: {e}")
+            return None
     
     def _filter_candidate_points(self, observed_points, candidate_points, precision=8):
         '''Filter candidate points that already exist in observed points. Also remove duplicates.'''
@@ -465,13 +535,21 @@ Hyperparameter configuration:"""
         if self.warping_transformer is not None:
             observed_configs = self.warping_transformer.warp(observed_configs)
 
-        prompt_templates, query_templates = self._gen_prompt_tempates_acquisitions(observed_configs, observed_fvals, desired_fval, n_prompts=self.n_templates, use_context=use_context, use_feature_semantics=use_feature_semantics, shuffle_features=self.shuffle_features)
+        prompt_templates, query_templates = self._gen_prompt_tempates_acquisitions(observed_configs, observed_fvals, 
+                                                                                   desired_fval, n_prompts=self.n_templates, 
+                                                                                   use_context=use_context, use_feature_semantics=use_feature_semantics, 
+                                                                                   shuffle_features=self.shuffle_features)
 
         print('='*100)
         print('EXAMPLE ACQUISITION PROMPT')
         print(f'Length of prompt templates: {len(prompt_templates)}')
         print(f'Length of query templates: {len(query_templates)}')
-        print(prompt_templates[0].format(A=query_templates[0][0]['A']))
+        try:
+            print(prompt_templates[0].format(A=query_templates[0][0]['A']))
+        except Exception as e:
+            print("TYPE:", self.prompting)
+            print("TEMPLATE:", prompt_templates[0])
+            print("Query:", query_templates[0][0]['A'])
         print('='*100)
 
         number_candidate_points = 0
@@ -492,10 +570,17 @@ Hyperparameter configuration:"""
                 for response_message in response[0].choices:
                     response_content = response_message.message.content
                     try:
-                        response_content = response_content.split('##')[1].strip()
-                        candidate_points.append(self._convert_to_json(response_content))
+                        if self.prompting == 'cot':
+                            reasoning, answer = parse_cot_answer(response_content)
+                            if answer is None:
+                                continue
+                        else:
+                            answer = response_content.split('##')[1].strip()
+                        res = self._convert_to_json(answer)
+                        if res is None:
+                            continue
+                        candidate_points.append(res)
                     except Exception as e:
-                        print(f"Error processing response: {e}")
                         print(response_content)
                         continue
                 tot_cost += response[1]

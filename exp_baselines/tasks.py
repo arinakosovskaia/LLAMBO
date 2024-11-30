@@ -84,6 +84,7 @@ def obtain_bo_other(bo_type):
 def bo_loop(bo_type, n_repetitions, fun_to_evaluate, config_space, order_list, n_runs, n_init, list_init_config):
     all_final_y    = []
     all_metrics_pd = []
+    all_regrets = []
     for idx in range(n_repetitions):
         # Different handling based on the type of Bayesian optimization
         if bo_type in ['bo_hebo', 'bo_turbo', 'bo_tpe', 'bo_smac', 'bo_skopt', 'bo_optuna']:
@@ -103,6 +104,7 @@ def bo_loop(bo_type, n_repetitions, fun_to_evaluate, config_space, order_list, n
 
 # Function to run all models for a given evaluation function and set of templates
 def run_all_models(fun_to_evaluate, all_dict_templates, n_repetitions, n_runs, n_init, config_space, order_list, path_name):
+        all_regrets = []     
         for dict_template in all_dict_templates:
                 name_exp              = dict_template['name_experiment']
                 template_obj          = dict_template['template_object']
@@ -118,7 +120,26 @@ def run_all_models(fun_to_evaluate, all_dict_templates, n_repetitions, n_runs, n
                                                         n_runs,
                                                         n_init,
                                                         list_config)
-                save_pickle_dict(all_metrics_pd, path_spec_results, 'metrics')
+
+                # Regret tracking per repetition
+                repetition_regrets = []
+                for repetition_metrics in all_metrics_pd:
+                    scores = repetition_metrics['generalization_score'].to_numpy()
+                    best_score = scores.min() if 'lower_is_better' in dict_template else scores.max()
+
+                    # Calculate regrets for each trial in the repetition
+                    trial_regrets = [
+                        abs(score - best_score) for score in scores
+                    ]
+                    repetition_regrets.append(trial_regrets)
+
+                all_regrets.append(repetition_regrets)
+
+                save_pickle_dict(
+                    {'metrics': all_metrics_pd, 'regrets': repetition_regrets},
+                    path_spec_results,
+                    "metrics_with_regrets",
+                )
 
 # Function to run the Bayesian optimization process for models evaluated with Bayesmark
 def run_bayesmark(list_model, list_data, list_metric, all_dict_templates, n_repetitions, n_runs, n_init):

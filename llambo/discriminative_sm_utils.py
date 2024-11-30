@@ -1,6 +1,15 @@
 import numpy as np
-from langchain import FewShotPromptTemplate
-from langchain import PromptTemplate
+from langchain.prompts.few_shot import FewShotPromptTemplate
+from langchain.prompts.prompt import PromptTemplate
+
+def make_cot_prompt(max_tokens):
+    cot_prompt = f"""Think step by step, clearly indicating how each hyperparameter is selected based on its effect on the performance. Your response must return a JSON object in the following format:
+    ""reasoning": "Let's break it down and solve step by step.", "answer": "## performance ##"". 
+    Do not write more than {max_tokens} tokens in the reasoning part.
+    "Reasoning" must contain no more than {max_tokens} tokens. "Answer" only contain the predicted performance, in the format ## performance ##. 
+    """
+    return cot_prompt
+
 
 def _count_decimal_places(n):
     '''Count the number of decimal places in a number.'''
@@ -112,7 +121,9 @@ def gen_prompt_tempates(
         use_context='full_context', 
         use_feature_semantics=True,
         shuffle_features=False,
-        apply_warping=False
+        apply_warping=False,
+        prompting='zero_shot',
+        max_reasoning_tokens=300
 ):
     '''Generate prompt templates for the few-shot learning task.'''
 
@@ -156,7 +167,11 @@ Performance: {A}"""
             else:
                 raise Exception
             prefix += f" The tabular dataset contains {n_samples} samples and {tot_feats} features ({cat_feats} categorical, {num_feats} numerical). "
-        prefix += f" Your response should only contain the predicted {metric} in the format ## performance ##."
+
+        if prompting == 'cot':
+            prefix += make_cot_prompt(max_reasoning_tokens)
+        else:
+            prefix += f" Your response should only contain the predicted {metric} in the format ## performance ##."
 
         suffix = """
 Hyperparameter configuration: {Q}

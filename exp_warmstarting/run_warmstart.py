@@ -5,13 +5,13 @@ from utils_templates import FullTemplate, RandomTemplate
 from tasks import run_bayesmark
 
 # Define lists of configurations for the experiments.
-LIST_INIT     = ["random", "sobol", "lhs", "Partial_Context", "No_Context", "Full_Context"]
-LIST_SM       = ["bo_tpe", "bo_skopt"]
-LIST_DATASETS = [ 'breast', 'wine', 'digits', 'cutract', 'maggic', 'seer']
+LIST_INIT     = ["Full_Context", 'CoT']
+LIST_SM       = ["bo_tpe"]
+LIST_DATASETS = ['breast']
 
-LIST_MODELS   = ['RF', 'SVM', 'DT']
+LIST_MODELS   = ['RF']
 LIST_METRICS  = ['acc']
-NUM_SEEDS     = 10
+NUM_SEEDS     = 1
 NUM_INIT      = 5
 NUM_RUNS      = 25
 

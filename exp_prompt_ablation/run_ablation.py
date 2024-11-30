@@ -118,6 +118,9 @@ if __name__ == '__main__':
     parser.add_argument('--sm_mode', type=str)
     parser.add_argument('--ablation_type', type=str) # could be 'partial_context' or 'no_context'
     parser.add_argument('--shuffle_features', type=str)
+    parser.add_argument('--max_reasoning_tokens', type=int)
+    parser.add_argument('--prompting', type=str)
+
 
     args = parser.parse_args()
     dataset = args.dataset
@@ -127,6 +130,8 @@ if __name__ == '__main__':
     sm_mode = args.sm_mode
     ablation_type = args.ablation_type
     shuffle_features = args.shuffle_features
+    prompting = args.prompting
+    max_reasoning_tokens = args.max_reasoning_tokens
 
     assert sm_mode == 'discriminative'
     assert ablation_type in ['full_context', 'partial_context', 'no_context']
@@ -154,7 +159,6 @@ if __name__ == '__main__':
     else:
         raise ValueError(f'Invalid dataset: {dataset}')
 
-
     # Describe task context
     task_context = {}
     task_context['model'] = model
@@ -169,20 +173,28 @@ if __name__ == '__main__':
     with open('hp_configurations/bayesmark.json', 'r') as f:
         task_context['hyperparameter_constraints'] = json.load(f)[model]
 
+    lower_is_better = False if TASK_MAP[dataset][1] == 'accuracy' else True
+    with open('bayesmark/data/global_perf.json', 'r') as f:
+        global_perf = json.load(f)
+    
+    global_best_score = global_perf[dataset]['global_min'] if lower_is_better else global_perf[dataset]['global_max']
+    global_worst_score = global_perf[dataset]['global_max'] if lower_is_better else global_perf[dataset]['global_min']
+    logger.info(f'Global best score: {global_best_score:.4f}, global worst score: {global_worst_score:.4f}')
 
     # define result save directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     shuffle_type = 'shuffled_feature' if shuffle_features == 'True' else 'unshuffled_feature'
-    save_res_dir = f'{script_dir}/results_{sm_mode}/{dataset}/{model}/{ablation_type}_{shuffle_type}/'
+    save_res_dir = f'{script_dir}/results_{sm_mode}/{dataset}/{model}/{ablation_type}_{shuffle_type}_{prompting}_{max_reasoning_tokens}/'
     if not os.path.exists(save_res_dir):
         os.makedirs(save_res_dir)
     # define logging directory
-    logging_fpath = f'{script_dir}/logs_{sm_mode}/{dataset}/{model}/{ablation_type}_{shuffle_type}.log'
+    logging_fpath = f'{script_dir}/logs_{sm_mode}/{dataset}/{model}/{ablation_type}_{shuffle_type}_{prompting}_{max_reasoning_tokens}.log'
     if not os.path.exists(os.path.dirname(logging_fpath)):
         os.makedirs(os.path.dirname(logging_fpath))
     setup_logging(logging_fpath)
 
-    tot_llm_cost = 0
+    regrets, regrets_, fvals_, r2_arr_, rmse_arr_ = [], [], [], [], []
+
     for seed in range(num_seeds):
         logger.info('='*200)
         logger.info(f'Ablating LLAMBO ({sm_mode} | {ablation_type} | Shuffle features: {shuffle_features}) to tune {model} on {dataset} with seed {seed+1} / {num_seeds}...')
@@ -195,32 +207,38 @@ if __name__ == '__main__':
         llambo = LLAMBO(task_context, sm_mode, n_candidates=20, n_templates=2, n_gens=10, 
                         alpha=0.1, n_initial_samples=5, n_trials=25, init_f=benchmark.generate_initialization,
                         bbox_eval_f=benchmark.evaluate_point, chat_engine=chat_engine, top_pct=top_pct, 
-                        prompt_setting=ablation_type, shuffle_features=bool(shuffle_features))
+                        prompt_setting=ablation_type, shuffle_features=bool(shuffle_features),
+                        max_reasoning_tokens=max_reasoning_tokens, prompting=prompting)
         llambo.seed = seed
-        configs, fvals = llambo.optimize()
+        configs, fvals, regret, best_fval, rmse_arr = llambo.optimize(global_best_score=global_best_score, 
+                                                                       global_worst_score=global_worst_score)
+        regrets.append(regret)
+        rmse_arr_.append(rmse_arr)
 
-
-        logger.info(f'[LLAMBO] Query cost: {sum(llambo.llm_query_cost):.4f}')
         logger.info(f'[LLAMBO] Query time: {sum(llambo.llm_query_time):.4f}')
-        tot_llm_cost += sum(llambo.llm_query_cost)
 
-        # save search history
-        search_history = pd.concat([configs, fvals], axis=1)
-        search_history.to_csv(f'{save_res_dir}/{seed}.csv', index=False)
-
-        
-        logger.info(search_history)
         logger.info(f'[LLAMBO | Ablation: {ablation_type} | Shuffle features: {shuffle_features}] RUN COMPLETE, saved results to {save_res_dir}...')
 
         # save search info
         search_info = {
-            'llm_query_cost_breakdown': llambo.llm_query_cost,
             'llm_query_time_breakdown': llambo.llm_query_time,
-            'llm_query_cost': sum(llambo.llm_query_cost),
             'llm_query_time': sum(llambo.llm_query_time),
+            'best_f_val': best_fval,
+            'regrets': regrets,
+            'rmse_arr_': rmse_arr_
         }
         with open(f'{save_res_dir}/{seed}_search_info.json', 'w') as f:
             json.dump(search_info, f)
 
+         # save search history
+        configs = pd.DataFrame(configs) if isinstance(configs, list) else configs
+        fvals = pd.DataFrame(fvals) if isinstance(fvals, list) else fvals
+        regrets = pd.DataFrame(regrets) if isinstance(regrets, list) else regrets
+
+        search_history = pd.concat([configs, fvals, regrets], axis=1)
+        search_history.to_csv(f'{save_res_dir}/{seed}.csv', index=False)
+       
+        logger.info(search_history)
+
     logger.info('='*200)
-    logger.info(f'[LLAMBO | Ablation: {ablation_type} | Shuffle features: {shuffle_features}] {seed+1} evaluation runs complete! Total cost: ${tot_llm_cost:.4f}')
+    logger.info(f'[LLAMBO | Ablation: {ablation_type} | Shuffle features: {shuffle_features}] {seed+1} evaluation runs complete!')

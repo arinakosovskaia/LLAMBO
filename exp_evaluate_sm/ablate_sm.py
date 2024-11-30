@@ -149,9 +149,12 @@ def evaluate_posterior(fval_pred, fval_pred_std, fval_true,
         fval_pred = fval_pred.squeeze()
     if fval_pred_std.shape != 1:
         fval_pred_std = fval_pred_std.squeeze()
-    if fval_true.shape != 1:
+    if fval_true.shape[0] != 1:
         fval_true = fval_true.squeeze()
-        
+    
+    assert len(fval_pred.shape) == 1, f"fval_pred is not 1D: {fval_pred.shape}"
+    assert len(fval_pred_std.shape) == 1, f"fval_pred_std is not 1D: {fval_pred_std.shape}"
+    assert len(fval_true.shape) == 1, f"fval_true is not 1D: {fval_true.shape}"       
     assert len(fval_pred.shape) == 1 and len(fval_pred_std.shape) == 1 and len(fval_true.shape) == 1
     
     # calculate normalized RMSE

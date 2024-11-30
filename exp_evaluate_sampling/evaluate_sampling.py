@@ -1,4 +1,5 @@
 import os
+import asyncio
 import argparse
 import json
 import optuna
@@ -26,6 +27,41 @@ def setup_logging(log_name):
     logger.addHandler(file_handler)
     logger.setLevel(logging.INFO)
 
+def run_cot(results, max_tokens):
+        logger.info(f"Running cot with {max_tokens}")
+        asyncio.run(asyncio.sleep(0))
+        asyncio.sleep(60)
+
+        LLM_Sampler_cot = LLM_ACQ(task_context, n_candidates=20, n_templates=5, lower_is_better=lower_is_better, 
+                              rate_limiter=rate_limiter, chat_engine=engine, prompting='cot', max_reasoning_tokens=max_tokens)
+        candidates, _, _ = LLM_Sampler_cot.get_candidate_points(observed_configs, observed_fvals, alpha=-0.2)
+        # evaluate candidates
+        candidates = candidates.to_dict('records')
+        evaluation = evaluate_proposals(candidates, observed_configs, model, task_type, task_metric, dataset, lower_is_better, hp_constraints)
+        av_regret, best_regret, perf_spread, ml_dist, gen_var, ll, candidate_scores = evaluation
+        logger.info(f'[LLAMBO_CoT_{max_tokens}] Average regret: {av_regret:.4f}, Best regret: {best_regret:.4f}, '
+                    f'Score spread: {perf_spread:.4f}, Mahalanobis distance: {ml_dist:.4f}, '
+                    f'Gen var: {gen_var:.4f}, Log likelihood: {ll:.4f}')
+
+        results.setdefault(f'LLAMBO_CoT_{max_tokens}', {
+            'av_regret': [], 
+            'best_regret': [], 
+            'score_spread': [], 
+            'ml_dist': [], 
+            'gen_var': [], 
+            'll': [],
+            'proposed_points': [], 
+            'proposed_points_evaluation': []
+        })
+
+        results[f'LLAMBO_CoT_{max_tokens}']['av_regret'].append(av_regret)
+        results[f'LLAMBO_CoT_{max_tokens}']['best_regret'].append(best_regret)
+        results[f'LLAMBO_CoT_{max_tokens}']['score_spread'].append(perf_spread)
+        results[f'LLAMBO_CoT_{max_tokens}']['ml_dist'].append(ml_dist)
+        results[f'LLAMBO_CoT_{max_tokens}']['gen_var'].append(gen_var)
+        results[f'LLAMBO_CoT_{max_tokens}']['ll'].append(ll)
+        results[f'LLAMBO_CoT_{max_tokens}']['proposed_points'].append(candidates)
+        results[f'LLAMBO_CoT_{max_tokens}']['proposed_points_evaluation'].append(candidate_scores.tolist())
 
 def obtain_n_configurations(hp_constraints, n, dataset, model, 
                             task_metric, task_type, lower_is_better):
@@ -217,6 +253,18 @@ TASK_MAP = {
     'diabetes': ['regression', 'neg_mean_squared_error'],
 }
 
+def create_path():
+    # define result save directory
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    save_res_fpath = f'{script_dir}/results/evaluate_sampling_big/{dataset_name}/{model}/{num_observed}.json'
+    if not os.path.exists(os.path.dirname(save_res_fpath)):
+        os.makedirs(os.path.dirname(save_res_fpath))
+    # define logging directory
+    logging_fpath = f'{script_dir}/logs/evaluate_sampling_big/{dataset_name}/{model}/{num_observed}.log'
+    if not os.path.exists(os.path.dirname(logging_fpath)):
+        os.makedirs(os.path.dirname(logging_fpath))
+    setup_logging(logging_fpath)
+    return save_res_fpath, logging_fpath
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -225,6 +273,7 @@ if __name__ == '__main__':
     parser.add_argument('--num_observed', type=int, default=10)
     parser.add_argument('--num_seeds', type=int, default=1)
     parser.add_argument('--engine', type=str)
+    parser.add_argument('--experiment_number', type=int, default=0, help='Experiment number for results tracking')
 
     args = parser.parse_args()
     model = args.model
@@ -232,6 +281,7 @@ if __name__ == '__main__':
     num_observed = args.num_observed
     num_seeds = args.num_seeds
     engine = args.engine
+    experiment_number = args.experiment_number
 
     # load hyperparameter config space
     with open(f'hp_configurations/bayesmark.json', 'r') as f:
@@ -240,18 +290,6 @@ if __name__ == '__main__':
     task_map = TASK_MAP[dataset_name]
     task_type = task_map[0]
     task_metric = task_map[1]
-
-
-    # define result save directory
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    save_res_fpath = f'{script_dir}/results/evaluate_sampling/{dataset_name}/{model}/{num_observed}.json'
-    if not os.path.exists(os.path.dirname(save_res_fpath)):
-        os.makedirs(os.path.dirname(save_res_fpath))
-    # define logging directory
-    logging_fpath = f'{script_dir}/logs/evaluate_sampling/{dataset_name}/{model}/{num_observed}.log'
-    if not os.path.exists(os.path.dirname(logging_fpath)):
-        os.makedirs(os.path.dirname(logging_fpath))
-    setup_logging(logging_fpath)
 
     logger.info('='*200)
     logger.info(f'Evaluating sampling performance on {dataset_name} with {model} and {num_observed} observed configurations... Executing {num_seeds} runs.')
@@ -288,6 +326,7 @@ if __name__ == '__main__':
     logger.info(f'Global best score: {global_best_score:.4f}, global worst score: {global_worst_score:.4f}')
 
     tot_llm_cost = 0
+    save_res_fpath, logging_fpath = create_path()
     for seed in range(num_seeds):
         logger.info('='*200)
         logger.info(f'Evaluating sampling with seed {seed}...')
@@ -354,7 +393,7 @@ if __name__ == '__main__':
         results['RANDOM']['proposed_points_evaluation'].append(candidate_scores.tolist())
 
 
-        # sample candidates from LLM sampler
+        # sample candidates from LLM sampler\
         task_context = {}
         task_context['model'] = model
         task_context['task'] = task_type
@@ -366,7 +405,9 @@ if __name__ == '__main__':
         task_context['num_samples'] = dataset['train_x'].shape[0]
         task_context['hyperparameter_constraints'] = hp_constraints
         # sample candidates
-        LLM_Sampler = LLM_ACQ(task_context, n_candidates=20, n_templates=5, lower_is_better=lower_is_better, rate_limiter=rate_limiter, chat_engine=engine)
+        
+        LLM_Sampler = LLM_ACQ(task_context, n_candidates=20, n_templates=5, lower_is_better=lower_is_better, 
+                              rate_limiter=rate_limiter, chat_engine=engine, prompting='zero_shot', max_reasoning_tokens=0)
         candidates, tot_cost, time_taken = LLM_Sampler.get_candidate_points(observed_configs, observed_fvals, alpha=-0.2)
         # evaluate candidates
         candidates = candidates.to_dict('records')
@@ -386,6 +427,12 @@ if __name__ == '__main__':
         # track costs
         tot_llm_cost += tot_cost
 
+        asyncio.run(asyncio.sleep(0))
+        asyncio.sleep(60)
+
+        for max_tokens in [500, 1000, 2000, 3000]:
+            run_cot(results, max_tokens)       
+        
         # save results
         with open(save_res_fpath, 'w') as f:
             json.dump(results, f, indent=4)

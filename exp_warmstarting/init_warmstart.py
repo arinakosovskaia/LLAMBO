@@ -3,7 +3,7 @@ from utils_templates import RandomTemplate, FullTemplate
 from sampler import write_random_bayesmark
 
 # Predefined lists containing datasets, models, and metrics to be used in the experiments
-LIST_DATASETS = ['cutract', 'maggic', 'seer', 'breast', 'wine', 'digits']
+LIST_DATASETS = ['breast']
 #LIST_DATASETS = ['cutract']
 
 LIST_MODELS   = ['RF', 'SVM', 'DT']

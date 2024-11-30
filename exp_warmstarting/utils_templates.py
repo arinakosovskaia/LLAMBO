@@ -122,6 +122,7 @@ ALL_TEMPLATES_PATH = {
     'Full_Context':    f'{CURRENT_DIR}/templates/classification_fullcontext.txt',
     'No_Context':      f'{CURRENT_DIR}/templates/classification_nocontext.txt',
     'Partial_Context': f'{CURRENT_DIR}/templates/classification_partialcontext.txt',
+    'CoT': f'{CURRENT_DIR}/templates/classification_cot.txt',
 }
 
 class FullTemplate(TemplateReader):

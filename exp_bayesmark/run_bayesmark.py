@@ -126,11 +126,8 @@ if __name__ == '__main__':
     chat_engine = args.engine
     sm_mode = args.sm_mode
 
-    assert sm_mode in ['discriminative', 'generative']
-    if sm_mode == 'generative':
-        top_pct = 0.25
-    else:
-        top_pct = None
+    assert sm_mode == 'discriminative'
+    top_pct = None
 
     # Load training and testing data
     if dataset in BAYESMARK_TASK_MAP:
@@ -182,6 +179,7 @@ if __name__ == '__main__':
     setup_logging(logging_fpath)
 
     tot_llm_cost = 0
+    regrets = []
     for seed in range(num_seeds):
         logger.info('='*200)
         logger.info(f'Executing LLAMBO ({sm_mode} | top_pct: {top_pct}) to tune {model} on {dataset} with seed {seed+1} / {num_seeds}...')
@@ -195,7 +193,8 @@ if __name__ == '__main__':
                         alpha=0.1, n_initial_samples=5, n_trials=25, init_f=benchmark.generate_initialization,
                         bbox_eval_f=benchmark.evaluate_point, chat_engine=chat_engine, top_pct=top_pct)
         llambo.seed = seed
-        configs, fvals = llambo.optimize()
+        configs, fvals, regret = llambo.optimize()
+        regrets.append(regret)
 
 
         logger.info(f'[LLAMBO] Query cost: {sum(llambo.llm_query_cost):.4f}')
@@ -216,6 +215,7 @@ if __name__ == '__main__':
             'llm_query_time_breakdown': llambo.llm_query_time,
             'llm_query_cost': sum(llambo.llm_query_cost),
             'llm_query_time': sum(llambo.llm_query_time),
+            'regrets': regrets,
         }
         with open(f'{save_res_dir}/{seed}_search_info.json', 'w') as f:
             json.dump(search_info, f)

@@ -3,15 +3,15 @@
 #!/bin/bash
 trap "kill -- -$BASHPID" EXIT
 
-ENGINE="gpt35turbo_20230727"
+ENGINE="mistralai/Mixtral-8x22B-Instruct-v0.1"
 
-for dataset in "breast" "wine" "digits" "diabetes"
+for dataset in "wine" "digits" "diabetes" "breast" 
 do
     for model in "RandomForest" 
     do
         for num_observed in 5 10 20 30
         do
-            python3 exp_evaluate_sm/evaluate_dis_sm.py --dataset $dataset --model $model --num_observed $num_observed --num_seeds 1 --engine $ENGINE
+            python3 exp_evaluate_sm/evaluate_dis_sm.py --dataset $dataset --model $model --num_observed $num_observed --num_seeds 3 --engine $ENGINE
         done
     done
 done

@@ -17,7 +17,7 @@ class RateLimiter:
         # keeps track of the number of requests made
         self.request_count = 0
 
-    def add_request(self, request_text=None, request_token_count=None, current_time=None):
+    def add_request(self, request_text=None, request_token_count=None, current_time=None, model='gpt-3.5-turbo'):
         current_time = time.time()
 
         if request_text is not None:

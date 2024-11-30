@@ -4,11 +4,13 @@
 trap "kill -- -$BASHPID" EXIT
 
 # This is the OpenAI LLM Engine
-ENGINE="gpt35turbo_20230727"
+#ENGINE="meta-llama/Meta-Llama-3.1-70B-Instruct"
 
-for dataset in "digits" "wine" "diabetes" "iris" "breast"
+ENGINE="gpt-3.5-turbo-0125"
+ENGINE='meta-llama/Meta-Llama-3.1-70B-Instruct'
+for dataset in "digits"
 do
-    for model in "RandomForest" "SVM" "DecisionTree" "MLP_SGD" "AdaBoost"
+    for model in "RandomForest"
     do
         python3 exp_bayesmark/run_bayesmark.py --dataset $dataset --model $model --num_seeds 1 --sm_mode discriminative --engine $ENGINE
         sleep 60

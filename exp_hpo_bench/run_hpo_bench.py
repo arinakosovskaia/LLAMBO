@@ -174,7 +174,7 @@ if __name__ == '__main__':
         llambo.seed = seed
 
 
-        configs, fvals = llambo.optimize()
+        configs, fvals, _ = llambo.optimize()
         logger.info(f'[LLAMBO] Query cost: {sum(llambo.llm_query_cost):.4f}')
         logger.info(f'[LLAMBO] Query time: {sum(llambo.llm_query_time):.4f}')
         tot_llm_cost += sum(llambo.llm_query_cost)
