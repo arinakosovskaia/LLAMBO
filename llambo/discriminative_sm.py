@@ -8,13 +8,9 @@ from llambo.rate_limiter import RateLimiter
 from llambo.discriminative_sm_utils import gen_prompt_tempates
 from openai import AsyncOpenAI
 
-#ENGINE  = "gpt-3.5-turbo-0125"
-#client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-
-ENGINE  = "meta-llama/Meta-Llama-3.1-70B-Instruct"
 client = AsyncOpenAI(
-    base_url="https://api.studio.nebius.ai/v1/",
-    api_key=os.environ.get("NEBIUS_API_KEY"),
+    base_url=os.environ.get("BASE_URL"),
+    api_key=os.environ.get("API_KEY"),
     )
 
 

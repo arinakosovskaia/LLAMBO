@@ -2,19 +2,14 @@ import os
 import random
 import math
 import time
-import openai
 import asyncio
 import numpy as np
 import pandas as pd
 from langchain.prompts.few_shot import FewShotPromptTemplate
 from langchain.prompts.prompt import PromptTemplate
-from openai import AsyncOpenAI, OpenAI
+from openai import AsyncOpenAI
 import json
 from llambo.rate_limiter import RateLimiter
-from openai import OpenAI
-
-#ENGINE  = "gpt-3.5-turbo-0125"
-#client = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 def parse_cot_answer(text):
     text = text.lower()
@@ -38,15 +33,9 @@ def parse_cot_answer(text):
     
     return reasoning_part, answer_part
 
-ENGINE  = "meta-llama/Meta-Llama-3.1-70B-Instruct" #"gpt-3.5-turbo-0125"
 client = AsyncOpenAI(
-    base_url="https://api.studio.nebius.ai/v1/",
-    api_key=os.environ.get("NEBIUS_API_KEY"),
-    )
-
-client1 = AsyncOpenAI(
-    base_url="https://api.studio.nebius.ai/v1/",
-    api_key=os.environ.get("NEBIUS_API_KEY"),
+    base_url=os.environ.get("BASE_URL"),
+    api_key=os.environ.get("API_KEY"),
     )
 
 def make_cot_prompt(max_tokens):

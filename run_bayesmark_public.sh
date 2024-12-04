@@ -4,9 +4,7 @@
 trap "kill -- -$BASHPID" EXIT
 
 # This is the OpenAI LLM Engine
-#ENGINE="meta-llama/Meta-Llama-3.1-70B-Instruct"
 
-ENGINE="gpt-3.5-turbo-0125"
 ENGINE='meta-llama/Meta-Llama-3.1-70B-Instruct'
 for dataset in "digits"
 do

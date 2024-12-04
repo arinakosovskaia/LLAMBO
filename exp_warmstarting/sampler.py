@@ -3,12 +3,12 @@ from typing import Any, Dict, List, Union
 
 import ConfigSpace as CS
 import ConfigSpace.hyperparameters as CSH
-import openai
 import os
 import sys
 import json
 sys.path.append('exp_baselines')  # Adding a directory to the Python path for importing modules
 
+from openai import OpenAI
 import numpy as np
 
 # Type aliases for better readability
@@ -20,6 +20,11 @@ config2type = {
     "UniformIntegerHyperparameter": int,
     "OrdinalHyperparameter": float,
 }
+
+client = OpenAI(
+    base_url=os.environ.get("BASE_URL"),
+    api_key=os.environ.get("API_KEY"),
+    )
 
 # Function to check if a value falls within the specified range of a hyperparameter
 def check_value_range(hp_name: str, config: CSH.Hyperparameter, val: NumericType) -> None:
@@ -228,25 +233,19 @@ def obtain_dict_init(name_init, config_space, order_list, random_state = 0, num_
 ############################################################################
 
 def chat_gpt(input_text):
-    # Set up OpenAI API parameters from environment variables
-    openai.api_type    = os.environ["OPENAI_API_TYPE"]
-    openai.api_version = os.environ["OPENAI_API_VERSION"]
-    openai.api_base    = os.environ["OPENAI_API_BASE"]
-    openai.api_key     = os.environ["OPENAI_API_KEY"]
-    ENGINE             = os.environ["OPENAI_API_ENGINE"]
-
+    ENGINE             = "meta-llama/Meta-Llama-3.1-70B-Instruct"
     # Initialize the message payload with system and user roles
     message = []
     message.append({"role":"system","content":"You are an AI assistant that helps people find information."})
     message.append({"role":"user", "content":input_text})
     # Request a chat completion from the OpenAI API with specified parameters
-    resp = openai.ChatCompletion.create(
-        engine = ENGINE,
+    resp = client.chat.completions.create(
+        model = ENGINE,
         messages = message,
         temperature = 0.7,
         top_p = 0.95,
         n = 30,
-        request_timeout = 100
+        timeout = 100
     )
     return resp
 
@@ -273,14 +272,13 @@ def obtain_all_list_valid(resp, config_space):
     all_resp = []
     import re
     import ast
-    for i in range(len(resp["choices"])):
+    for choice in resp.choices:
         try:
-            text = resp["choices"][i]["message"]["content"]
+            text = choice.message.content
             print("##################################")
             print(text)
             print("##################################")
-            re.findall(r'\{[^}]+\}', text)
-            dict_list = re.findall(r'\d+\.\s+({.*?})', text, re.DOTALL)
+            dict_list = re.findall(r"\{.*?\}", text, re.DOTALL)
             parsed_dicts = [ast.literal_eval(d) for d in dict_list]
             if check_all_list(parsed_dicts, config_space):
                 all_resp += [parsed_dicts]
