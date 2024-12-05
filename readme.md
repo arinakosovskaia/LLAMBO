@@ -64,3 +64,38 @@ Follow these steps to set up the environment:
 ```bash
    pip install -r requirements.txt
 ```
+### 3. Running Experiments
+
+#### End-to-End Demonstration of the Algorithm
+To run an end-to-end demonstration of the algorithm, use the script ./run_prompt_ablation.sh:
+```bash
+./run_prompt_ablation.sh
+```
+This script accepts the following parameters:
+- ENGINE: The large language model used for generation (e.g., OpenAI GPT).
+- prompting: The type of prompting to use:
+  - "cot" for Chain of Thoughts (CoT) few-shot prompting.
+  - "few_shot" for standard few-shot prompting.
+- max_reasoning_tokens: The maximum number of tokens the model can use for reasoning.
+
+#### Evaluating LLM as a Discriminative Surrogate Model
+To evaluate the large language model (LLM) as a discriminative surrogate model with different numbers of observations and types of prompting, use the script ./run_evaluate_dis_sm.sh:
+```bash
+./run_evaluate_dis_sm.sh
+```
+You can specify the ENGINE parameter to select the LLM for evaluation.
+
+#### Evaluating LLM as a Candidate Sampler
+To evaluate the LLM as a candidate sampler, use the script ./run_evaluate_sampling.sh:
+```bash
+./run_evaluate_sampling.sh
+```
+
+---
+
+### 4. Generating Plots
+
+Detailed descriptions and instructions for generating plots can be found in the `make_plots` folder. 
+```bash
+cd make_plots
+```

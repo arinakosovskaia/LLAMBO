@@ -2,17 +2,23 @@ import os
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+import argparse
 
-base_dir = "/Users/arina/Desktop/phd_project/LLAMBO/exp_evaluate_sampling/results/evaluate_sampling_big"
-algorithms = ['LLAMBO', 'LLAMBO_CoT_500', 'LLAMBO_CoT_1000', 'LLAMBO_CoT_2000', 'LLAMBO_CoT_3000']
+parser = argparse.ArgumentParser()
+parser.add_argument("--base_dir", type=str, required=True, help="Base directory containing evaluation results.")
+parser.add_argument(
+    "--algorithms",
+    type=str,
+    nargs="+",
+    default=['LLAMBO', 'LLAMBO_CoT_500', 'LLAMBO_CoT_1000', 'LLAMBO_CoT_2000', 'LLAMBO_CoT_3000'],
+    help="List of algorithms to evaluate. Default: ['LLAMBO', 'LLAMBO_CoT_500', 'LLAMBO_CoT_1000', 'LLAMBO_CoT_2000', 'LLAMBO_CoT_3000']"
+)
 
-reasoning_tokens = {
-    'LLAMBO': 0,
-    'LLAMBO_CoT_500': 500,
-    'LLAMBO_CoT_1000': 1000,
-    'LLAMBO_CoT_2000': 2000,
-    'LLAMBO_CoT_3000': 3000,
-}
+args = parser.parse_args()
+base_dir = args.base_dir
+algorithms = args.algorithms
+
+reasoning_tokens = {algo: int(algo.split('_')[-1]) if '_CoT_' in algo else 0 for algo in algorithms}
 
 metrics = {
     'av_regret': 'Avg Regret (↓)',
@@ -46,6 +52,48 @@ def process_files_single(directory):
                                 results[metric][n_points][tokens].extend(values)
     
     return results
+
+def aggregate_datasets(all_results):
+    aggregated = {metric: {} for metric in metrics}
+
+    for dataset_results in all_results:
+        for metric in metrics:
+            for n_points, token_values in dataset_results[metric].items():
+                if n_points not in aggregated[metric]:
+                    aggregated[metric][n_points] = {}
+                
+                for tokens, values in token_values.items():
+                    if tokens not in aggregated[metric][n_points]:
+                        aggregated[metric][n_points][tokens] = {'means': [], 'stds': [], 'sizes': []}
+                    
+                    mean = np.mean(values)
+                    std = np.std(values, ddof=1)
+                    size = len(values)
+                    
+                    aggregated[metric][n_points][tokens]['means'].append(mean)
+                    aggregated[metric][n_points][tokens]['stds'].append(std)
+                    aggregated[metric][n_points][tokens]['sizes'].append(size)
+
+    for metric in metrics:
+        for n_points in aggregated[metric]:
+            for tokens in aggregated[metric][n_points]:
+                dataset_means = np.array(aggregated[metric][n_points][tokens]['means'])
+                dataset_stds = np.array(aggregated[metric][n_points][tokens]['stds'])
+                dataset_sizes = np.array(aggregated[metric][n_points][tokens]['sizes'])
+
+                overall_mean = np.sum(dataset_means * dataset_sizes) / np.sum(dataset_sizes)
+
+                overall_variance = (
+                    np.sum((dataset_sizes - 1) * dataset_stds**2) +
+                    np.sum(dataset_sizes * (dataset_means - overall_mean)**2)
+                ) / (np.sum(dataset_sizes) - 1)
+
+                aggregated[metric][n_points][tokens] = {
+                    'mean': overall_mean,
+                    'std': np.sqrt(overall_variance)
+                }
+    
+    return aggregated
 
 def aggregate_datasets(all_results):
     aggregated = {metric: {} for metric in metrics}

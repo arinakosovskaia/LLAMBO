@@ -12,10 +12,10 @@ args = parser.parse_args()
 results = {
     "cot_300": {},
     "cot_500": {},
-    "zero_shot": {}
+    "few_shot": {}
 }
 
-labels = ['cot_300', 'cot_500', 'zero_shot']
+labels = ['cot_300', 'cot_500', 'few_shot']
 keys = ['regrets', 'best_f_val']
 
 for idx, file_path in enumerate(args.file_paths):
@@ -32,8 +32,8 @@ for idx, file_path in enumerate(args.file_paths):
         results["cot_500"]["regrets"] = regrets
         results["cot_500"]["best_f_val"] = best_f_val
     else:
-        results["zero_shot"]["regrets"] = regrets
-        results["zero_shot"]["best_f_val"] = best_f_val
+        results["few_shot"]["regrets"] = regrets
+        results["few_shot"]["best_f_val"] = best_f_val
 
 for label in labels:
     print(f"Best f_val for {label}: {results[label]['best_f_val']}")

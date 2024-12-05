@@ -407,7 +407,7 @@ if __name__ == '__main__':
         # sample candidates
         
         LLM_Sampler = LLM_ACQ(task_context, n_candidates=20, n_templates=5, lower_is_better=lower_is_better, 
-                              rate_limiter=rate_limiter, chat_engine=engine, prompting='zero_shot', max_reasoning_tokens=0)
+                              rate_limiter=rate_limiter, chat_engine=engine, prompting='few_shot', max_reasoning_tokens=0)
         candidates, tot_cost, time_taken = LLM_Sampler.get_candidate_points(observed_configs, observed_fvals, alpha=-0.2)
         # evaluate candidates
         candidates = candidates.to_dict('records')

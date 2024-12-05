@@ -1,14 +1,23 @@
+import argparse
 import numpy as np
 import matplotlib.pyplot as plt
-import os
-
 import os
 import json
-import numpy as np
-import matplotlib.pyplot as plt
 
-base_dir = "/Users/arina/Desktop/phd_project/LLAMBO/exp_evaluate_sampling/results/evaluate_sampling_big"
-algorithms = ['LLAMBO', 'LLAMBO_CoT_500', 'LLAMBO_CoT_1000', 'LLAMBO_CoT_2000', 'LLAMBO_CoT_3000']
+parser = argparse.ArgumentParser()
+parser.add_argument("--base_dir", type=str, required=True, help="Base directory containing evaluation results.")
+parser.add_argument(
+    "--algorithms",
+    type=str,
+    nargs="+",
+    default=['LLAMBO', 'LLAMBO_CoT_300', 'LLAMBO_CoT_500', 'LLAMBO_CoT_700', 'LLAMBO_CoT_1000'],
+    help="List of algorithms to evaluate. Default: ['LLAMBO', 'LLAMBO_CoT_300', 'LLAMBO_CoT_500', 'LLAMBO_CoT_700', 'LLAMBO_CoT_1000']"
+)
+args = parser.parse_args()
+
+base_dir = args.base_dir
+algorithms = args.algorithms
+
 #algorithms = ['TPE_IN', 'LLAMBO', 'RANDOM', 'TPE_MULTI']
 #algorithms_all = ['TPE_IN', 'LLAMBO', 'RANDOM', 'TPE_MULTI', 'LLAMBO', 'LLAMBO_CoT_300', 'LLAMBO_CoT_500', 'LLAMBO_CoT_700', 'LLAMBO_CoT_1000']
 
@@ -61,27 +70,22 @@ def aggregate_datasets(all_results):
                     aggregated[algo][metric][n_points]['stds'].append(std)
                     aggregated[algo][metric][n_points]['sizes'].append(size)
 
-    # Теперь объединяем по формуле
     for algo in algorithms:
         for metric in metrics:
             for n_points in aggregated[algo][metric]:
                 dataset_means = np.array(aggregated[algo][metric][n_points]['means'])
                 dataset_stds = np.array(aggregated[algo][metric][n_points]['stds'])
                 dataset_sizes = np.array(aggregated[algo][metric][n_points]['sizes'])
-
-                # Общее среднее
                 overall_mean = np.sum(dataset_means * dataset_sizes) / np.sum(dataset_sizes)
 
-                # Общая дисперсия
                 overall_variance = (
                     np.sum((np.array(dataset_sizes) - 1) * np.array(dataset_stds)**2) + 
                     np.sum(dataset_sizes * (np.array(dataset_means) - overall_mean)**2)
                 ) / (np.sum(dataset_sizes) - 1)
 
-                # Сохраняем итоговые значения
                 aggregated[algo][metric][n_points] = {
                     'mean': overall_mean,
-                    'std': np.sqrt(overall_variance)  # Стандартное отклонение
+                    'std': np.sqrt(overall_variance)
                 }
     
     return aggregated
@@ -106,14 +110,13 @@ def plot_aggregated_results(results, output_dir):
 
         plt.xlabel("Number of Observed Points")
         plt.ylabel(label)
-        plt.yscale('log')
-        plt.title(f"Averaged {label} Across Datasets (log scale)")
+        plt.title(f"Averaged {label} Across Datasets")
         plt.legend()
         plt.grid(True)
         plt.tight_layout()
 
-        plt.savefig(os.path.join(output_dir, f"logscale_averaged_{metric}.png"), dpi=300)
-        plt.savefig(os.path.join(output_dir, f"logscale_averaged_{metric}.pdf"))
+        plt.savefig(os.path.join(output_dir, f"averaged_{metric}.png"), dpi=300)
+        plt.savefig(os.path.join(output_dir, f"averaged_{metric}.pdf"))
         plt.close()
 
 all_results = []

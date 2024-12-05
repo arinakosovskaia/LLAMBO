@@ -94,7 +94,7 @@ class LLAMBO:
                  prompt_setting=None,    # ablation on prompt design, either 'full_context' or 'partial_context' or 'no_context'
                  shuffle_features=False,     # whether to shuffle features in prompt generation
                  max_reasoning_tokens=300,
-                 prompting='zero_shot'
+                 prompting='few_shot'
                  ):
         self.task_context = task_context
         assert sm_mode in ['generative', 'discriminative']

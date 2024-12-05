@@ -122,7 +122,7 @@ def gen_prompt_tempates(
         use_feature_semantics=True,
         shuffle_features=False,
         apply_warping=False,
-        prompting='zero_shot',
+        prompting='few_shot',
         max_reasoning_tokens=300
 ):
     '''Generate prompt templates for the few-shot learning task.'''

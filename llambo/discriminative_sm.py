@@ -21,7 +21,7 @@ class LLM_DIS_SM:
                  rate_limiter=None, warping_transformer=None,
                  verbose=False, chat_engine=None, 
                  prompt_setting=None, shuffle_features=False,
-                 max_reasoning_tokens=300, prompting='zero_shot'):
+                 max_reasoning_tokens=300, prompting='few_shot'):
         '''Initialize the forward LLM surrogate model. This is modelling p(y|x) as in GP/SMAC etc.'''
         self.task_context = task_context
         self.n_gens = n_gens

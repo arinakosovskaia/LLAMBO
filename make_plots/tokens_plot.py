@@ -1,10 +1,22 @@
+import argparse
 import os
 import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-base_dir = "/Users/arina/Desktop/phd_project/LLAMBO/exp_evaluate_sampling/results/evaluate_sampling_big"
-algorithms = ['LLAMBO', 'LLAMBO_CoT_500', 'LLAMBO_CoT_1000', 'LLAMBO_CoT_2000', 'LLAMBO_CoT_3000']
+parser = argparse.ArgumentParser()
+parser.add_argument("--base_dir", type=str, required=True, help="Base directory containing evaluation results.")
+parser.add_argument(
+    "--algorithms",
+    type=str,
+    nargs="+",
+    default=['LLAMBO', 'LLAMBO_CoT_300', 'LLAMBO_CoT_500', 'LLAMBO_CoT_700', 'LLAMBO_CoT_1000'],
+    help="List of algorithms to evaluate. Default: ['LLAMBO', 'LLAMBO_CoT_300', 'LLAMBO_CoT_500', 'LLAMBO_CoT_700', 'LLAMBO_CoT_1000']"
+)
+args = parser.parse_args()
+
+base_dir = args.base_dir
+algorithms = args.algorithms
 
 # Define reasoning tokens for each algorithm
 reasoning_tokens = {
@@ -76,7 +88,6 @@ def plot_reasoning_vs_metric(dataset_name, results, output_dir):
         plt.savefig(os.path.join(output_dir, f"{dataset_name}_{metric}.pdf"))
         plt.close()
 
-# Main execution loop
 for dataset in os.listdir(base_dir):
     dataset_dir = os.path.join(base_dir, dataset, "RandomForest")  
     if os.path.isdir(dataset_dir):

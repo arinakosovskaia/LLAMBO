@@ -1,11 +1,22 @@
+import argparse
 import os
 import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-base_dir = "/Users/arina/Desktop/phd_project/LLAMBO/exp_evaluate_sampling/results/evaluate_sampling"
+parser = argparse.ArgumentParser()
+parser.add_argument("--base_dir", type=str, required=True, help="Base directory containing evaluation results.")
+parser.add_argument(
+    "--algorithms",
+    type=str,
+    nargs="+",
+    default=['TPE_IN', 'LLAMBO', 'RANDOM', 'TPE_MULTI', 'LLAMBO_CoT'],
+    help="List of algorithms to evaluate. Default: ['TPE_IN', 'LLAMBO', 'RANDOM', 'TPE_MULTI', 'LLAMBO_CoT']"
+)
+args = parser.parse_args()
 
-algorithms = ['TPE_IN', 'LLAMBO', 'RANDOM', 'TPE_MULTI', 'LLAMBO_CoT']
+base_dir = args.base_dir
+algorithms = args.algorithms
 
 metrics = {
     'av_regret': 'Avg Regret (↓)',

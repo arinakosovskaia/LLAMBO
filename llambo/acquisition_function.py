@@ -50,7 +50,7 @@ def make_cot_prompt(max_tokens):
 class LLM_ACQ:
     def __init__(self, task_context, n_candidates, n_templates, lower_is_better, 
                  jitter=False, rate_limiter=None, warping_transformer=None, chat_engine=None, 
-                 prompt_setting=None, shuffle_features=False, max_reasoning_tokens=300, prompting='zero_shot'):
+                 prompt_setting=None, shuffle_features=False, max_reasoning_tokens=300, prompting='few_shot'):
 
         '''Initialize the LLM Acquisition function.'''
         self.task_context = task_context
@@ -331,7 +331,7 @@ Hyperparameter configuration:"""
                 try:
                     start_time = time.time()
                     self.rate_limiter.add_request(request_text=user_message, current_time=start_time)
-                    if self.prompting == 'zero_shot':
+                    if self.prompting == 'few_shot':
                         resp = await client.chat.completions.create(
                             model=ENGINE,#self.chat_engine,
                             messages=message,
